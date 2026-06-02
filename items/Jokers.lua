@@ -1,4 +1,11 @@
 SMODS.Atlas {
+  key = "Jokers1",
+  path = "GhostpostingJokers1.png",
+  px = 71,
+  py = 95
+}
+
+SMODS.Atlas {
   key = "Markiplier",
   path = "GhostpostingMarkiplier.png",
   px = 71,
@@ -89,9 +96,172 @@ SMODS.Joker({
 
 
 
+
+
+
+SMODS.Atlas {
+  key = "Xnopyt",
+  path = "GhostpostingXnopyt.png",
+  px = 71,
+  py = 95
+}
+
+SMODS.Sound({
+  key = "xnopyt_yes",
+  path = "gstpst_xnopyt_yes.ogg"
+})
+
+for i = 1, 9 do
+  SMODS.Sound({
+    key = "xnopyt-0" .. i,
+    path = "gstpst_xnopyt-0" .. i .. ".ogg"
+  })
+end
+
+for i = 10, 11 do
+  SMODS.Sound({
+    key = "xnopyt-" .. i,
+    path = "gstpst_xnopyt-" .. i .. ".ogg"
+  })
+end
+
+SMODS.Joker({
+  key = "xnopyt",
+  config = { extra = { added_xmult = 0.2, current_xmult = 1 } },
+  rarity = 2,
+  atlas = "Xnopyt",
+  pos = { x = 0, y = 0 },
+  flipbook_anim_states = {
+    ["xnopyt"] = {
+      anim = {
+        { xrange = { first = 0, last = 8 }, yrange = { first = 0, last = 6 }, t = 0.1 },
+        { xrange = { first = 0, last = 4 }, y = 7,                            t = 0.1 }
+      },
+      loop = true
+    },
+
+    ["blown"] = {
+      anim = { { x = 5, y = 7, t = 2 } },
+      loop = false,
+      continuation = "xnopyt"
+    },
+
+    ["wow"] = {
+      anim = { { x = 6, y = 7, t = 0.6 } },
+      loop = false,
+      continuation = "xnopyt"
+    }
+  },
+  flipbook_anim_initial_state = "xnopyt",
+  cost = 7,
+  loc_vars = function(self, info_queue, card)
+    return { vars = { card.ability.extra.added_xmult, card.ability.extra.current_xmult } }
+  end,
+  blueprint_compat = true,
+  eternal_compat = true,
+  perishable_compat = false,
+  pronouns = "he_him",
+
+  add_to_deck = function(self, card, from_debuff)
+    local number = math.random(11)
+    if number < 10 then number = "0"..number end
+    play_sound("gstpst_xnopyt-" .. number, 1, 0.9)
+    card:flipbook_set_anim_state("blown")
+  end,
+  calculate = function(self, card, context)
+    if context.joker_main and card.ability.extra.current_xmult > 1 then return { xmult = card.ability.extra.current_xmult } end
+
+    if context.before and not context.blueprint then
+      for _, v in ipairs(context.scoring_hand) do
+        if v and not SMODS.has_no_rank(v) and v:get_id() == 10 then
+          G.E_MANAGER:add_event(Event({
+            trigger = "before",
+            timer = "REAL",
+            delay = 0.6,
+            func = function()
+              card:flipbook_set_anim_state("wow")
+              play_sound("gstpst_xnopyt_yes", 0.9 + (math.random() * 0.1), 0.9)
+              return true
+            end
+          }))
+          card.ability.extra.current_xmult = card.ability.extra.current_xmult + card.ability.extra.added_xmult
+          return { message = localize("k_upgrade_ex") }
+        end
+      end
+    end
+  end
+})
+
+
+
+
+
+
+
+
+SMODS.Joker({
+  key = "personmcdudeguy",
+  no_pool_flag = "personmcdudeguy_sold",
+  config = { extra = { money = 1 } },
+  rarity = 1,
+  atlas = "Jokers1",
+  pos = { x = 1, y = 0 },
+  cost = 6,
+  loc_vars = function(self, info_queue, card)
+    return { vars = { card.ability.extra.money } }
+  end,
+  blueprint_compat = true,
+  eternal_compat = true,
+  perishable_compat = true,
+  pronouns = "he_him",
+
+  calculate = function(self, card, context)
+    if context.before or context.pre_discard then
+      return { dollars = card.ability.extra.money }
+    end
+
+    if context.selling_self and not context.blueprint then
+      G.GAME.pool_flags.personmcdudeguy_sold = true
+    end
+  end
+})
+
+SMODS.Joker({
+  key = "demonmcevilmonster",
+  yes_pool_flag = "personmcdudeguy_sold",
+  config = { extra = { xmult = 3, money = 1 } },
+  rarity = 1,
+  atlas = "Jokers1",
+  pos = { x = 2, y = 0 },
+  cost = 6,
+  loc_vars = function(self, info_queue, card)
+    return { vars = { card.ability.extra.money, card.ability.extra.xmult } }
+  end,
+  blueprint_compat = true,
+  eternal_compat = true,
+  perishable_compat = true,
+  pronouns = "it_its",
+
+  calculate = function(self, card, context)
+    if context.pre_discard then
+      return { dollars = -card.ability.extra.money }
+    end
+
+    if context.joker_main then
+      return { xmult = card.ability.extra.xmult }
+    end
+  end
+})
+
+
+
+
+
+
+
 SMODS.Atlas {
   key = "OneArmedBandit",
-  path = "GhostpostingJokers.png",
+  path = "GhostpostingOneArmedBandit.png",
   px = 71,
   py = 95
 }
@@ -129,6 +299,19 @@ SMODS.Sound({
 SMODS.Sound({
   key = "bandit_bonus",
   path = "gstpst_bandit_bonus.ogg"
+})
+
+SMODS.Sound({
+  vol = 1,
+  pitch = 1,
+  key = "bandit_music",
+  path = "gstpst_bandit_music.ogg",
+  select_music_track = function()
+    if #SMODS.find_card("j_gstpst_onearmedbandit") > 0 and not Ghostposting.config["custom_music_disabled"] then
+      return 1e6
+    end
+    return false
+  end
 })
 
 G.gstpst_onearmedbandit_reels = {
@@ -665,7 +848,7 @@ SMODS.Joker({
     },
   },
   flipbook_anim_extra_initial_states = { arm = "passive", coin = "passive", --[[prize_base = "passive", prize_bonus = "passive",]] reel_a = "seven", reel_b = "seven", reel_c = "seven", reel_bonus = "seven" },
-  cost = 7,
+  cost = 4,
   loc_vars = function(self, info_queue, card)
     return { vars = { card.ability.extra.spin_cost, card.ability.extra.flush_prize, card.ability.extra.line_prize, card.ability.extra.jackpot_prize, card.ability.extra.bonus_reel_prize } }
   end,
@@ -738,6 +921,15 @@ SMODS.Joker({
         scoring_type = "flush"
         prize = self.ability.extra.flush_prize
       end
+    end
+
+    if scoring_type == "passive" and symbol_c ~= "seven" and pseudorandom("gstpst_onearmedbandit_fail_scare", 1, 40) == 1 then
+      self.ability.extra.reel_states.reel_a = G.reel_test and G.reel_test[1] or 1
+      self.ability.extra.reel_states.reel_b = G.reel_test and G.reel_test[2] or 1
+      symbol_a = "seven"
+      symbol_b = "seven"
+      scoring_type = "jackpot miss"
+      prize = 0
     end
 
     local bonus_prize = symbol_bonus == symbol_c and self.ability.extra.bonus_reel_prize or 0

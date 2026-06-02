@@ -91,6 +91,36 @@ return {
                     "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)"
                 }
             },
+            j_gstpst_xnopyt     = {
+                name = "Tom Scott",
+                text =
+                {
+                    "Gains {C:white,X:mult}X#1#{} Mult",
+                    "if played hand",
+                    "contains a {C:attention}10{}",
+                    "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)"
+                }
+            },
+            j_gstpst_personmcdudeguy     = {
+                name = "Person McDudeguy",
+                text =
+                {
+                    "ooooo look at me i",
+                    "give {C:money}$#1#{} when you",
+                    "{C:blue}play{} or {C:red}discard{} ooooo",
+                    "so strong and good"
+                }
+            },
+            j_gstpst_demonmcevilmonster     = {
+                name = "Demon McEvilmonster",
+                text =
+                {
+                    "{C:red}grrrr i'm so evil now{}",
+                    "{C:red}and you lose $#1# on{}",
+                    "{C:red}discard but also i'm{}",
+                    "{C:red}{C:white,X:mult}X#2#{C:red} Mult now grrrrrrr{}"
+                }
+            },
             j_gstpst_onearmedbandit = {
                 name = "One Armed Bandit",
                 text =
@@ -119,7 +149,9 @@ return {
     },
     misc = {
         dictionary = {
-            b_gstpst_spin = "SPIN"
+            b_gstpst_spin = "SPIN",
+
+            gstpst_disable_custom_music = "Disable custom music"
         },
         labels = {
 
