@@ -1,7 +1,7 @@
 return {
     descriptions = {
         Joker = {
-            j_gstpst_markiplier     = {
+            j_gstpst_markiplier         = {
                 name = "Markiplier",
                 text =
                 {
@@ -11,7 +11,7 @@ return {
                     "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)"
                 }
             },
-            j_gstpst_markiplier_1   = {
+            j_gstpst_markiplier_1       = {
                 name = "Multiplier",
                 text =
                 {
@@ -21,7 +21,7 @@ return {
                     "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)"
                 }
             },
-            j_gstpst_markiplier_2   = {
+            j_gstpst_markiplier_2       = {
                 name = "Market Pire",
                 text =
                 {
@@ -31,7 +31,7 @@ return {
                     "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)"
                 }
             },
-            j_gstpst_markiplier_3   = {
+            j_gstpst_markiplier_3       = {
                 name = "Marlinshire",
                 text =
                 {
@@ -41,7 +41,7 @@ return {
                     "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)"
                 }
             },
-            j_gstpst_markiplier_4   = {
+            j_gstpst_markiplier_4       = {
                 name = "For Suppliers",
                 text =
                 {
@@ -51,7 +51,7 @@ return {
                     "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)"
                 }
             },
-            j_gstpst_markiplier_5   = {
+            j_gstpst_markiplier_5       = {
                 name = "Mark (A Player)",
                 text =
                 {
@@ -61,7 +61,7 @@ return {
                     "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)"
                 }
             },
-            j_gstpst_markiplier_6   = {
+            j_gstpst_markiplier_6       = {
                 name = "Market Buyer",
                 text =
                 {
@@ -71,7 +71,7 @@ return {
                     "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)"
                 }
             },
-            j_gstpst_markiplier_7   = {
+            j_gstpst_markiplier_7       = {
                 name = "Park For Hire",
                 text =
                 {
@@ -81,7 +81,7 @@ return {
                     "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)"
                 }
             },
-            j_gstpst_markiplier_8   = {
+            j_gstpst_markiplier_8       = {
                 name = "Welcome",
                 text =
                 {
@@ -91,7 +91,7 @@ return {
                     "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)"
                 }
             },
-            j_gstpst_xnopyt     = {
+            j_gstpst_xnopyt             = {
                 name = "Tom Scott",
                 text =
                 {
@@ -101,7 +101,7 @@ return {
                     "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)"
                 }
             },
-            j_gstpst_personmcdudeguy     = {
+            j_gstpst_personmcdudeguy    = {
                 name = "Person McDudeguy",
                 text =
                 {
@@ -111,7 +111,7 @@ return {
                     "so strong and good"
                 }
             },
-            j_gstpst_demonmcevilmonster     = {
+            j_gstpst_demonmcevilmonster = {
                 name = "Demon McEvilmonster",
                 text =
                 {
@@ -121,7 +121,30 @@ return {
                     "{C:red}{C:white,X:mult}X#2#{C:red} Mult now grrrrrrr{}"
                 }
             },
-            j_gstpst_onearmedbandit = {
+            j_gstpst_boris              = {
+                name = "Boris",
+                text =
+                {
+                    "Press {C:red}MORE{} to select up",
+                    "to {C:attention}#1#{} ranks to {C:red}ground{}: they",
+                    "are placed on the {C:attention}bottom{} of",
+                    "the deck when it is {C:attention}shuffled{}",
+                    "{C:inactive}(#2#){}"
+                }
+            },
+            j_gstpst_cross              = {
+                name = "Cross",
+                text =
+                {
+                    "{C:white,X:mult}X#1#{} Mult",
+                    "When {C:attention}Blind{} is selected,",
+                    "rotate this {C:attention}Joker{}",
+                    "{C:attention}X2 Blind{} size when rotated",
+                    "{C:attention}down{}, gains {C:white,X:mult}X#2#{} Mult",
+                    "when rotated {C:attention}up{}"
+                }
+            },
+            j_gstpst_onearmedbandit     = {
                 name = "One Armed Bandit",
                 text =
                 {
@@ -150,6 +173,9 @@ return {
     misc = {
         dictionary = {
             b_gstpst_spin = "SPIN",
+            b_gstpst_more = "MORE",
+            k_gstpst_boris_menu_title = "Grounding Menu",
+            b_boris_rank = "Rank",
 
             gstpst_disable_custom_music = "Disable custom music"
         },
@@ -157,7 +183,9 @@ return {
 
         },
         v_dictionary = {
-
+            gstpst_boris_more_tooltip = {
+                "Select up to #1# ranks to ground."
+            },
         }
     }
 }
