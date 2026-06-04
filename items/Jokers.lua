@@ -382,7 +382,8 @@ do --Boris
             default = all_ranks_localised[G.GAME.gstpst_current_boris_card.ability.extra.ranks[i]],
             rank_index = i,
             loc_ranks = all_ranks_localised,
-            option_align = "cm"
+            option_align = "cm",
+            close_on_select = true,
           }),
           -- create_option_cycle({
           --   id = "gstpst_boris_cycle_" .. i,
