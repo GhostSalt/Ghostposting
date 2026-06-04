@@ -364,14 +364,35 @@ do --Boris
         n = G.UIT.R,
         config = { align = "cm", padding = 0 },
         nodes = {
-          create_option_cycle({
-            id = "gstpst_boris_cycle_" .. i,
-            label = localize("b_boris_rank") .. " " .. i,
-            scale = 0.8,
+          SMODS.GUI.dropdown_select({
             options = all_ranks_localised,
-            opt_callback = "gstpst_boris_change_rank",
-            current_option = G.GAME.gstpst_current_boris_card.ability.extra.ranks[i]
-          })
+            minw = 2,
+            max_menu_h = 2.5,
+            callback = "gstpst_boris_change_rank",
+            is_option_disabled = function (option)
+              if option == all_ranks_localised[1] then return false end
+              for index, r in ipairs(G.GAME.gstpst_current_boris_card.ability.extra.ranks) do
+                if option == all_ranks_localised[r] and i ~= index then
+                  return true
+                end
+              end
+            end,
+            ref_table = {},
+            ref_value = "",
+            default = all_ranks_localised[G.GAME.gstpst_current_boris_card.ability.extra.ranks[i]],
+            rank_index = i,
+            loc_ranks = all_ranks_localised,
+            option_align = "cm",
+            close_on_select = true,
+          }),
+          -- create_option_cycle({
+          --   id = "gstpst_boris_cycle_" .. i,
+          --   label = localize("b_boris_rank") .. " " .. i,
+          --   scale = 0.8,
+          --   options = all_ranks_localised,
+          --   opt_callback = "gstpst_boris_change_rank",
+          --   current_option = G.GAME.gstpst_current_boris_card.ability.extra.ranks[i]
+          -- })
         }
       }
     end
@@ -426,9 +447,15 @@ do --Boris
 
   G.FUNCS.gstpst_boris_change_rank = function(args)
     for i = 1, G.GAME.gstpst_current_boris_card.ability.extra.no_of_ranks do
-      if args.cycle_config.id == "gstpst_boris_cycle_" .. i then
-        G.GAME.gstpst_current_boris_card.ability.extra.ranks[i] = args.to_key
-        return
+      if args.config.args_table.rank_index == i then
+        local all_ranks = args.config.args_table.loc_ranks
+        local target_index = 1
+        for j, r in ipairs(all_ranks) do
+          if args.config.value == r then
+            target_index = j
+          end
+        end
+        G.GAME.gstpst_current_boris_card.ability.extra.ranks[i] = target_index
       end
     end
     --
