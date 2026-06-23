@@ -5,7 +5,7 @@ SMODS.Atlas {
   py = 95
 }
 
-do --Markiplier
+if not next(SMODS.find_mod("ColdBeans")) then --Markiplier
   SMODS.Atlas {
     key = "Markiplier",
     path = "GhostpostingMarkiplier.png",
@@ -690,6 +690,96 @@ do --Cross
       })
     end
   end
+end
+
+do --Signed Egg
+  SMODS.Joker({
+    key = "signedegg",
+    config = { extra = { price = 2 } },
+    rarity = 2,
+    atlas = "Jokers1",
+    pos = { x = 6, y = 0 },
+    cost = 5,
+    loc_vars = function(self, info_queue, card)
+      return { vars = { card.ability.extra.price } }
+    end,
+    blueprint_compat = false,
+    eternal_compat = false,
+    perishable_compat = true,
+    pronouns = "it_its",
+
+    calculate = function(self, card, context)
+      if context.end_of_round and context.game_over == false and context.main_eval and not context.blueprint then
+        card.ability.extra_value = card.ability.extra_value + card.ability.extra.price
+        card:set_cost()
+        return {
+          message = localize("k_val_up"),
+          colour = G.C.MONEY
+        }
+      end
+
+      if context.selling_self and not context.blueprint and card.ability.extra_value > 0 then
+        local me
+        for i = 1, #G.jokers.cards do
+          if G.jokers.cards[i] == card then
+            me = i
+            break
+          end
+        end
+
+        if me and me > 1 and G.jokers.cards[me - 1] then
+          local _card = G.jokers.cards[me - 1]
+          _card.ability.extra_value = _card.ability.extra_value + card.ability.extra_value
+          _card:set_cost()
+          return {
+            message = localize("k_val_up"),
+            colour = G.C.MONEY,
+            message_card = _card
+          }
+        end
+      end
+    end
+  })
+end
+
+if not next(SMODS.find_mod("ColdBeans")) then --Better Credit Card
+  SMODS.Joker({
+    key = "bettercreditcard",
+    config = { extra = { bankrupt_at = 20 } },
+    loc_vars = function(self, info_queue, card)
+      return { vars = { card.ability.extra.bankrupt_at } }
+    end,
+    rarity = 2,
+    atlas = "Jokers1",
+    pos = { x = 7, y = 0 },
+    draw = function(self, card, layer)
+      if self.discovered or card.params.bypass_discovery_center then
+        card.children.center:draw_shader("booster", nil, card.ARGS.send_to_shader)
+      end
+    end,
+    cost = 1,
+    blueprint_compat = false,
+    eternal_compat = false,
+    perishable_compat = true,
+    pronouns = "it_its",
+
+    add_to_deck = function(self, card, from_debuff)
+      G.GAME.bankrupt_at = G.GAME.bankrupt_at - card.ability.extra.bankrupt_at
+    end,
+    remove_from_deck = function(self, card, from_debuff)
+      G.GAME.bankrupt_at = G.GAME.bankrupt_at + card.ability.extra.bankrupt_at
+      if not from_debuff then
+        if G.GAME.dollars < 0 then
+          G.E_MANAGER:add_event(Event({
+            func = function()
+              ease_dollars(-G.GAME.dollars)
+              return true
+            end
+          }))
+        end
+      end
+    end,
+  })
 end
 
 do --One Armed Bandit

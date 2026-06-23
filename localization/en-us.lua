@@ -101,7 +101,7 @@ return {
                     "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)"
                 }
             },
-            j_gstpst_cadonk         = {
+            j_gstpst_cadonk             = {
                 name = "Cadonk",
                 text =
                 {
@@ -155,6 +155,34 @@ return {
                     "when rotated {C:attention}up{}"
                 }
             },
+            j_gstpst_signedegg          = {
+                name = "Signed Egg",
+                text =
+                {
+                    {
+                        "Gains {C:money}$#1#{} of {C:attention}sell value{}",
+                        "at end of round"
+                    },
+                    {
+                        "When {C:money}sold{}, Joker to",
+                        "the left {C:attention}inherits{} this",
+                        "{C:attention}Joker's{} extra {C:green}sell value{}"
+                    }
+                }
+            },
+			j_gstpst_bettercreditcard           = {
+				name = "Better Credit Card",
+				text = {
+					{
+						"Go up to",
+						"{C:red}-$#1#{} in debt",
+					},
+					{
+						"Sell this {C:attention}Joker{}",
+						"to {C:red}nullify{} debt",
+					},
+				},
+			},
             j_gstpst_onearmedbandit     = {
                 name = "One Armed Bandit",
                 text =
