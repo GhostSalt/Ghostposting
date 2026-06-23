@@ -101,6 +101,17 @@ return {
                     "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)"
                 }
             },
+            j_gstpst_cadonk         = {
+                name = "Cadonk",
+                text =
+                {
+                    "Each hand counts as",
+                    "a {C:attention}random hand{} that",
+                    " ranks {C:attention}above{} it",
+                    "{C:inactive,s:0.8}(ex: Full House -> Four of{}",
+                    "{C:inactive,s:0.8}a Kind / Straight Flush){}"
+                }
+            },
             j_gstpst_personmcdudeguy    = {
                 name = "Person McDudeguy",
                 text =
@@ -167,7 +178,18 @@ return {
                         "{C:inactive}(WILD Cards excluded){}"
                     }
                 }
-            },
+            }
+        },
+        Back = {
+            b_gstpst_distracted = {
+                name = "Distracted Deck",
+                text = {
+                    "Instead of winning",
+                    "after defeating {C:attention}Ante 8{},",
+                    "you instead win after",
+                    "playing a {C:attention}Straight Flush{}"
+                }
+            }
         }
     },
     misc = {

@@ -187,6 +187,62 @@ do --Tom Scott
   })
 end
 
+do --Cadonk
+  SMODS.Joker({
+    key = "cadonk",
+    rarity = 2,
+    atlas = "Jokers1",
+    pos = { x = 0, y = 0 },
+    cost = 6,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pronouns = "he_him",
+
+    calculate = function(self, card, context)
+      if context.after and not context.blueprint then
+        if not card.ability.extra then card.ability.extra = {} end
+        card.ability.extra.hand_mapping = {}
+
+        for k, v in pairs(G.GAME.hands) do
+          local valid_hands = {}
+          for kk, vv in pairs(G.GAME.hands) do
+            if SMODS.is_poker_hand_visible(kk) and v.order > vv.order then
+              valid_hands[#valid_hands + 1] = kk
+            end
+          end
+          if #valid_hands > 0 then
+            local chosen_hand = pseudorandom_element(valid_hands, pseudoseed("cadonk_" .. k))
+            card.ability.extra.hand_mapping[k] = chosen_hand
+          end
+        end
+      end
+
+      if context.evaluate_poker_hand and card.ability.extra.hand_mapping[context.scoring_name] and not context.blueprint then
+        return { replace_scoring_name = card.ability.extra.hand_mapping[context.scoring_name] }
+      end
+    end,
+    set_ability = function(self, card, initial, delay_sprites)
+      if not card.ability then card.ability = {} end
+      if not card.ability.extra then card.ability.extra = {} end
+      card.ability.extra.hand_mapping = {}
+
+      for k, v in pairs(G.GAME.hands) do
+        local valid_hands = {}
+        for kk, vv in pairs(G.GAME.hands) do
+          if SMODS.is_poker_hand_visible(kk) and v.order > vv.order then
+            valid_hands[#valid_hands + 1] = kk
+          end
+        end
+        if #valid_hands > 0 then
+          local chosen_hand = pseudorandom_element(valid_hands, pseudoseed("cadonk_" .. k))
+          card.ability.extra.hand_mapping[k] = chosen_hand
+        end
+      end
+    end
+  })
+end
+
 do --Person McDudeguy, Demon McEvilmonster
   SMODS.Joker({
     key = "personmcdudeguy",
@@ -369,7 +425,7 @@ do --Boris
             minw = 2,
             max_menu_h = 2.5,
             callback = "gstpst_boris_change_rank",
-            is_option_disabled = function (option)
+            is_option_disabled = function(option)
               if option == all_ranks_localised[1] then return false end
               for index, r in ipairs(G.GAME.gstpst_current_boris_card.ability.extra.ranks) do
                 if option == all_ranks_localised[r] and i ~= index then
