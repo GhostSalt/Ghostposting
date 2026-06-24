@@ -2282,7 +2282,7 @@ do --One Armed Bandit
         prize = 0
       end
 
-      local bonus_prize = symbol_bonus == symbol_c and self.ability.extra.bonus_reel_prize or 0
+      local bonus_prize = symbol_bonus == symbol_c and prize > 0 and self.ability.extra.bonus_reel_prize or 0
 
       self:flipbook_set_anim_extra_state("pull", "arm")
       self:flipbook_set_anim_extra_state("insert", "coin")
