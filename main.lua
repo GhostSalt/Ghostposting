@@ -1,9 +1,9 @@
---[[SMODS.Atlas {
+SMODS.Atlas {
   key = "modicon",
-  path = "BFDIIcon.png",
+  path = "GhostpostingLogo.png",
   px = 34,
   py = 34
-}]]--
+}
 
 SMODS.current_mod.optional_features = { cardareas = { unscored = true } }
 
