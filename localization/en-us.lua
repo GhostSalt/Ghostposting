@@ -237,7 +237,7 @@ return {
                 {
                     "Each hand counts as",
                     "a {C:attention}random hand{} that",
-                    " ranks {C:attention}above{} it",
+                    "ranks {C:attention}above{} it",
                     "{C:inactive,s:0.8}(ex: Full House -> Four of{}",
                     "{C:inactive,s:0.8}a Kind / Straight Flush){}"
                 }
