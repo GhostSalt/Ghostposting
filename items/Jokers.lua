@@ -187,6 +187,554 @@ do --Tom Scott
   })
 end
 
+if not next(SMODS.find_mod("ColdBeans")) then --Fashion is my Passion, President Hathaway, Chuck McGill, Charles, Miracle Machine, Green / Blue Matador, Bozo Brain, The Last Supper, Pipeline Punch, Intentionally Blank, Zirconium Pants
+  SMODS.Joker({
+    key = "fashionismypassion",
+    config = { extra = { chips = 50 } },
+    rarity = 2,
+    atlas = "Jokers1",
+    pos = { x = 1, y = 9 },
+    cost = 7,
+    loc_vars = function(self, info_queue, card)
+      return { vars = { card.ability.extra.chips } }
+    end,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pronouns = "he_him",
+
+    calculate = function(self, card, context)
+      if context.individual and not context.repetition and context.cardarea == G.play and context.other_card:is_suit("Hearts") then
+        return { chips = card.ability.extra.chips }
+      end
+    end
+  })
+
+  SMODS.Joker({
+    key = "presidenthathaway",
+    config = { extra = { xmult = 2 } },
+    rarity = 3,
+    atlas = "Jokers1",
+    pos = { x = 9, y = 0 },
+    cost = 10,
+    loc_vars = function(self, info_queue, card)
+      return { vars = { card.ability.extra.xmult } }
+    end,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pronouns = "he_him",
+
+    calculate = function(self, card, context)
+      if
+          context.individual
+          and context.cardarea == G.play
+          and context.other_card:get_id() == 13
+          and context.other_card:is_suit("Spades")
+      then
+        return { xmult = card.ability.extra.xmult }
+      end
+    end,
+    remove_from_deck = function(self, card, from_debuff)
+      if not from_debuff and not G.CONTROLLER.locks.selling_card then
+        G.STATE = G.STATES.GAME_OVER
+        if not G.GAME.won and not G.GAME.seeded and not G.GAME.challenge then
+          G.PROFILES[G.SETTINGS.profile].high_scores.current_streak.amt = 0
+        end
+        G:save_settings()
+        G.FILE_HANDLER.force = true
+        G.STATE_COMPLETE = false
+        G.SETTINGS.paused = false
+        return
+      end
+    end,
+  })
+
+
+  SMODS.Sound({
+    key = "chicanery",
+    path = "gstpst_chicanery.ogg",
+  })
+
+  SMODS.Joker({
+    key = "chuckmcgill",
+    config = { extra = { xmult = 3 } },
+    rarity = 2,
+    atlas = "Jokers1",
+    pos = { x = 10, y = 0 },
+    cost = 7,
+    loc_vars = function(self, info_queue, card)
+      return {
+        vars = {
+          card.ability.extra.xmult,
+          (
+            G.GAME
+            and G.GAME.current_round
+            and G.GAME.current_round.hands_played ~= 0
+            and G.GAME.last_hand_played
+          )
+          and localize(G.GAME.last_hand_played, "poker_hands")
+          or localize("k_gstpst_unknown"),
+        },
+      }
+    end,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pronouns = "he_him",
+
+    calculate = function(self, card, context)
+      if context.joker_main then
+        local is_valid = context.scoring_name ~= card.ability.extra.prev_hand
+        card.ability.extra.prev_hand = context.scoring_name
+        if is_valid then
+          if not card.ability.extra.chicanery then
+            card.ability.extra.chicanery = true
+            G.E_MANAGER:add_event(Event({
+              func = function()
+                play_sound("gstpst_chicanery", 1, 0.7)
+                return true
+              end
+            }))
+          end
+          return { xmult = card.ability.extra.xmult }
+        end
+      end
+    end,
+  })
+
+
+
+
+
+  SMODS.Sound({
+    key = "greatest_plan",
+    path = "gstpst_greatest_plan.ogg"
+  })
+
+  SMODS.Joker({
+    key = "charles",
+    config = { extra = { money = 20 } },
+    rarity = 3,
+    atlas = "Jokers1",
+    pos = { x = 0, y = 7 },
+    flipbook_anim_states = {
+      ["normal"] = {
+        anim = {
+          { x = 0, y = 7, t = 1 },
+        },
+        loop = false,
+      },
+      ["happening"] = {
+        anim = {
+          { x = 1,                             y = 7, t = 1.8 + (0.94 / 2) },
+          { xrange = { first = 2, last = 11 }, y = 7, t = (0.94 / 2) / 18 },
+          { xrange = { first = 0, last = 7 },  y = 8, t = (0.94 / 2) / 18 }
+        },
+        loop = false,
+      },
+    },
+    flipbook_anim_initial_state = "normal",
+    cost = 8,
+    loc_vars = function(self, info_queue, card)
+      return { vars = { card.ability.extra.money } }
+    end,
+    blueprint_compat = false,
+    eternal_compat = false,
+    perishable_compat = true,
+    pronouns = "he_him",
+
+    calculate = function(self, card, context)
+      if context.end_of_round and context.game_over and context.main_eval then
+        G.E_MANAGER:add_event(Event({
+          func = function()
+            play_sound("gstpst_greatest_plan", 1, 1)
+            card:flipbook_set_anim_state("happening")
+            return true
+          end,
+        }))
+        G.E_MANAGER:add_event(Event({
+          trigger = "after",
+          timer = "REAL",
+          delay = 2.74,
+          func = function()
+            local me
+            for i = 1, #G.jokers.cards do
+              if G.jokers.cards[i] == card then
+                me = i
+              end
+            end
+
+            if me and me >= 1 and me <= #G.jokers.cards then
+              local marked = G.jokers.cards[me - 1]
+                  and G.jokers.cards[me + 1]
+                  and (pseudorandom("gstpst_charles", 1, 2) == 1 and G.jokers.cards[me - 1] or G.jokers.cards[me + 1])
+                  or G.jokers.cards[me - 1]
+                  or G.jokers.cards[me + 1]
+
+              if marked then
+                marked:start_dissolve()
+              end
+            end
+
+            G.hand_text_area.blind_chips:juice_up()
+            G.hand_text_area.game_chips:juice_up()
+            play_sound("tarot1")
+            return true
+          end,
+        }))
+        G.E_MANAGER:add_event(Event({
+          func = function()
+            card:start_dissolve()
+            return true
+          end,
+        }))
+        return { saved = "ph_gstpst_charles", dollars = card.ability.extra.money }
+      end
+    end,
+  })
+
+  SMODS.Joker({
+    key = "miraclemachine",
+    config = { extra = { money = 1 } },
+    rarity = 2,
+    atlas = "Jokers1",
+    pos = { x = 4, y = 6 },
+    cost = 6,
+    loc_vars = function(self, info_queue, card)
+      return { vars = { card.ability.extra.money } }
+    end,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pronouns = "he_him",
+
+    calculate = function(self, card, context)
+      if context.individual and context.cardarea == G.play then
+        if (
+              context.other_card:get_id() <= 10
+              and context.other_card:get_id() >= 0
+              and context.other_card:get_id() % 2 == 1
+            ) or (context.other_card:get_id() == 14)
+        then
+          return { dollars = card.ability.extra.money }
+        end
+      end
+    end,
+  })
+
+
+
+  SMODS.Joker({
+    key = "greenmatador",
+    config = { extra = { current_money = 0, added_money = 1 } },
+    rarity = 2,
+    atlas = "Jokers1",
+    pos = { x = 6, y = 6 },
+    cost = 7,
+    loc_vars = function(self, info_queue, card)
+      return { vars = { card.ability.extra.current_money, card.ability.extra.added_money } }
+    end,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = false,
+    pronouns = "he_they",
+
+    calculate = function(self, card, context)
+      if
+          context.end_of_round
+          and context.cardarea == G.jokers
+          and G.GAME.blind and G.GAME.blind:get_type() == "Boss"
+          and not context.blueprint
+      then
+        if G.GAME.current_round.discards_left > 0 then
+          card.ability.extra.current_money = card.ability.extra.current_money
+              + (card.ability.extra.added_money * G.GAME.current_round.discards_left)
+          return { message = localize("k_upgrade_ex") }
+        end
+      end
+    end,
+    calc_dollar_bonus = function(self, card)
+      if card.ability.extra.current_money > 0 then
+        return card.ability.extra.current_money
+      end
+    end,
+  })
+
+  SMODS.Joker({
+    key = "bluematador",
+    config = { extra = { current_money = 0, added_money = 1 } },
+    rarity = 2,
+    atlas = "Jokers1",
+    pos = { x = 7, y = 6 },
+    cost = 7,
+    loc_vars = function(self, info_queue, card)
+      return { vars = { card.ability.extra.current_money, card.ability.extra.added_money } }
+    end,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = false,
+    pronouns = "she_they",
+
+    calculate = function(self, card, context)
+      if
+          context.end_of_round
+          and context.cardarea == G.jokers
+          and G.GAME.blind and G.GAME.blind:get_type() == "Boss"
+          and not context.blueprint
+      then
+        if G.GAME.current_round.hands_left > 0 then
+          card.ability.extra.current_money = card.ability.extra.current_money
+              + (card.ability.extra.added_money * G.GAME.current_round.hands_left)
+          return { message = localize("k_upgrade_ex") }
+        end
+      end
+    end,
+    calc_dollar_bonus = function(self, card)
+      if card.ability.extra.current_money > 0 then
+        return card.ability.extra.current_money
+      end
+    end,
+  })
+
+  SMODS.Joker({
+    key = "bozobrain",
+    config = { extra = { money = 2 } },
+    rarity = 1,
+    atlas = "Jokers1",
+    pos = { x = 9, y = 6 },
+    cost = 5,
+    loc_vars = function(self, info_queue, card)
+      return { vars = { card.ability.extra.money } }
+    end,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pronouns = "he_they",
+
+    calculate = function(self, card, context)
+      if context.before and to_number(G.GAME.hands[context.scoring_name].level) == 1 then
+        return { dollars = card.ability.extra.money }
+      end
+    end,
+  })
+
+
+
+  function last_supper_count_faces()
+    local cards = {}
+    if G.playing_cards then
+      for i = 1, #G.playing_cards do
+        if not SMODS.has_no_rank(G.playing_cards[i]) and G.playing_cards[i]:is_face() then
+          cards[#cards + 1] = G.playing_cards[i]
+        end
+      end
+    end
+    return #cards
+  end
+
+  SMODS.Joker({
+    key = "thelastsupper",
+    config = { extra = { xmult = 3, faces = 12 } },
+    rarity = 2,
+    atlas = "Jokers1",
+    pos = { x = 11, y = 0 },
+    cost = 7,
+    loc_vars = function(self, info_queue, card)
+      return {
+        vars = {
+          card.ability.extra.xmult,
+          card.ability.extra.faces,
+          last_supper_count_faces(),
+          last_supper_count_faces() == card.ability.extra.faces and localize("k_gstpst_active")
+          or localize("k_gstpst_inactive"),
+        },
+      }
+    end,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pronouns = "they_them",
+
+    calculate = function(self, card, context)
+      if context.joker_main and last_supper_count_faces() == card.ability.extra.faces then
+        return { xmult = card.ability.extra.xmult }
+      end
+    end,
+  })
+
+  print("WARNING!!!!!!!!!!!!!!!!!!!!!!!!!! FIX PIPELINE PUNCH'S THINGY")
+
+  SMODS.Joker({
+    key = "pipelinepunch",
+    config = { extra = { hands_left = 10, odds = 2 } },
+    rarity = 2,
+    atlas = "Jokers1",
+    pos = { x = 0, y = 1 },
+    flipbook_anim = {
+      { xrange = { first = 0, last = 9 },   y = 1, t = 0.1 },
+      { x = 0,                              y = 1, t = 0.1 },
+      { xrange = { first = 10, last = 11 }, y = 1, t = 0.1 },
+      { xrange = { first = 0, last = 6 },   y = 2, t = 0.1 },
+    },
+    flipbook_pos_extra = { x = 7, y = 2 },
+    flipbook_anim_extra = {
+      { x = 7,  y = 2, t = 0.075 },
+      { x = 8,  y = 2, t = 0.125 },
+      { x = 9,  y = 2, t = 0.175 },
+      { x = 10, y = 2, t = 0.3 },
+      { x = 9,  y = 2, t = 0.175 },
+      { x = 8,  y = 2, t = 0.125 },
+      { x = 7,  y = 2, t = 0.075 },
+      { x = 11, y = 2, t = 0.125 },
+      { x = 0,  y = 3, t = 0.175 },
+      { x = 1,  y = 3, t = 0.3 },
+      { x = 0,  y = 3, t = 0.175 },
+      { x = 11, y = 2, t = 0.125 },
+    },
+    cost = 6,
+    loc_vars = function(self, info_queue, card)
+      local num, denom = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "pipelinepunch")
+      return { vars = { card.ability.extra.hands_left, num, denom } }
+    end,
+    blueprint_compat = true,
+    eternal_compat = false,
+    perishable_compat = true,
+    pronouns = "she_her",
+    pools = { ["Food"] = true },
+
+    calculate = function(self, card, context)
+      if context.before and SMODS.pseudorandom_probability(card, "pipelinepunch", 1, card.ability.extra.odds) then
+        local _card = context.scoring_hand[1]
+        G.E_MANAGER:add_event(Event({
+          func = function()
+            play_sound("tarot1")
+            card:juice_up()
+            return true
+          end,
+        }))
+        G.E_MANAGER:add_event(Event({
+          trigger = "after",
+          delay = 0.15,
+          func = function()
+            _card:flip()
+            play_sound("card1", 1)
+            _card:juice_up(0.3, 0.3)
+            return true
+          end,
+        }))
+        delay(0.2)
+        G.E_MANAGER:add_event(Event({
+          delay = 0.1,
+          func = function()
+            assert(SMODS.change_base(_card, nil, "Queen"))
+            return true
+          end,
+        }))
+        G.E_MANAGER:add_event(Event({
+          delay = 0.1,
+          func = function()
+            _card:flip()
+            play_sound("tarot2", 1)
+            _card:juice_up(0.3, 0.3)
+            return true
+          end,
+        }))
+        delay(0.2)
+      end
+
+      if context.after and not context.blueprint then
+        if card.ability.extra.hands_left - 1 <= 0 then
+          SMODS.destroy_cards(card, nil, nil, true)
+          return {
+            message = localize("k_drank_ex"),
+            colour = G.C.FILTER,
+          }
+        else
+          card.ability.extra.hands_left = card.ability.extra.hands_left - 1
+          return {
+            message = card.ability.extra.hands_left .. "",
+            colour = G.C.FILTER,
+          }
+        end
+      end
+    end,
+  })
+
+  SMODS.Joker({
+    key = "intentionallyblank",
+    config = { extra = { xmult = 1.3 } },
+    rarity = 1,
+    atlas = "Jokers1",
+    pos = { x = 2, y = 3 },
+    cost = 5,
+    loc_vars = function(self, info_queue, card)
+      return { vars = { card.ability.extra.xmult } }
+    end,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pronouns = "it_its",
+
+    calculate = function(self, card, context)
+      if context.other_joker then
+        local me
+        for i = 1, #G.jokers.cards do
+          if G.jokers.cards[i] == card then
+            me = i
+          end
+        end
+
+        if context.other_joker == G.jokers.cards[me - 1] or context.other_joker == G.jokers.cards[me + 1] then
+          return { xmult = card.ability.extra.xmult }
+        end
+      end
+    end,
+  })
+
+  SMODS.Joker({
+    key = "zirconiumpants",
+    rarity = 2,
+    atlas = "Jokers1",
+    pos = { x = 5, y = 6 },
+    cost = 7,
+    loc_vars = function(self, info_queue, card)
+      info_queue[#info_queue + 1] = G.P_CENTERS.m_steel
+      return {}
+    end,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pronouns = "they_them",
+
+    calculate = function(self, card, context)
+      if context.before and next(context.poker_hands["Two Pair"]) then
+        local candidates = {}
+        for _, v in ipairs(G.hand.cards) do
+          if not next(SMODS.get_enhancements(v)) then
+            candidates[#candidates + 1] = v
+          end
+        end
+
+        if next(candidates) then
+          local _card = pseudorandom_element(candidates, pseudoseed("zirconiumpants"))
+          G.E_MANAGER:add_event(Event({
+            func = function()
+              _card:set_ability("m_steel")
+              _card:juice_up()
+              return true
+            end,
+          }))
+          return {
+            message = localize({ key = "m_steel", type = "name_text", set = "Enhanced" }),
+            colour = G.C.FILTER,
+          }
+        end
+      end
+    end,
+  })
+end
+
 do --Cadonk
   SMODS.Joker({
     key = "cadonk",
@@ -296,6 +844,120 @@ do --Person McDudeguy, Demon McEvilmonster
         return { xmult = card.ability.extra.xmult }
       end
     end
+  })
+end
+
+if not next(SMODS.find_mod("ColdBeans")) then --Man Face, Splash Man, Face
+  SMODS.Sound({
+    key = "bwow",
+    path = "gstpst_bwow.ogg",
+  })
+
+  SMODS.Joker({
+    key = "manface",
+    rarity = 2,
+    atlas = "Jokers1",
+    pos = { x = 8, y = 0 },
+    cost = 5,
+    loc_vars = function(self, info_queue, card)
+      info_queue[#info_queue + 1] = { key = "gstpst_man", set = "Other", vars = {} }
+      return {}
+    end,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+
+    calculate = function(self, card, context)
+      if context.first_hand_drawn then
+        local candidates = {}
+        for i = 1, #G.hand.cards do
+          if not (G.hand.cards[i].ability and G.hand.cards[i].ability.gstpst_man) then
+            candidates[#candidates + 1] = G.hand.cards[i]
+          end
+        end
+        if #candidates > 0 then
+          local chosen_card = pseudorandom_element(candidates, pseudoseed("manface"))
+          chosen_card:add_sticker("gstpst_man", true)
+          card:juice_up()
+          play_sound("gstpst_bwow", 1, 0.7)
+          return { message = localize("gstpst_man", "labels"), colour = G.C.FILTER }
+        end
+      end
+    end,
+    pronouns = "he_him",
+  })
+
+  SMODS.Atlas {
+    key = "ManSticker",
+    path = "GhostpostingManSticker.png",
+    px = 71,
+    py = 95
+  }
+
+  SMODS.Sticker({
+    key = "man",
+    atlas = "ManSticker",
+    pos = { x = 0, y = 0 },
+    sets = {
+      Default = true,
+      Enhanced = true
+    },
+    badge_colour = HEX("555555"),
+    needs_enable_flag = true,
+    rate = 0,
+  })
+
+  local debuff_ref = Card.set_debuff
+  function Card:set_debuff(should_debuff)
+    if not (self.ability and self.ability["gstpst_man"]) then return debuff_ref(self, should_debuff) end
+  end
+
+  SMODS.Joker({
+    key = "splashman",
+    config = { extra = { xmult = 1.1 } },
+    rarity = 2,
+    atlas = "Jokers1",
+    pos = { x = 8, y = 6 },
+    cost = 6,
+    loc_vars = function(self, info_queue, card)
+      return { vars = { card.ability.extra.xmult } }
+    end,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pronouns = "he_they",
+
+    calculate = function(self, card, context)
+      if context.modify_scoring_hand and not context.blueprint then
+        return { add_to_hand = true }
+      end
+
+      if context.individual and not context.repetition and context.cardarea == G.play then
+        return { xmult = card.ability.extra.xmult }
+      end
+    end
+  })
+
+  SMODS.Joker({
+    key = "face",
+    config = { extra = { xmult = 1.2 } },
+    rarity = 1,
+    atlas = "Jokers1",
+    pos = { x = 0, y = 9 },
+    cost = 4,
+    loc_vars = function(self, info_queue, card)
+      return { vars = { card.ability.extra.xmult } }
+    end,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pronouns = "they_them",
+
+    calculate = function(self, card, context)
+      if context.individual and not context.repetition and context.cardarea == G.play and context.other_card:is_face() then
+        return { xmult = card.ability.extra.xmult }
+      end
+    end,
   })
 end
 
@@ -742,7 +1404,173 @@ do --Signed Egg
   })
 end
 
-if not next(SMODS.find_mod("ColdBeans")) then --Better Credit Card
+if not next(SMODS.find_mod("ColdBeans")) then --Traffic Light, Cacklejack, Better Credit Card
+  SMODS.Joker({
+    key = "theworldshardestjoker",
+    config = { extra = { counted = 0, target = 3 } },
+    rarity = 2,
+    atlas = "Jokers1",
+    pos = { x = 3, y = 3 },
+    pos_extra = { x = 4, y = 3 },
+    flipbook_anim_extra = {
+      { xrange = { first = 4, last = 11 }, y = 3,                            t = 0.025 },
+      { xrange = { first = 0, last = 11 }, yrange = { first = 4, last = 5 }, t = 0.025 },
+      { xrange = { first = 0, last = 2 },  y = 6,                            t = 0.025 },
+      { xrange = { first = 1, last = 0 },  y = 6,                            t = 0.025 },
+      { xrange = { first = 11, last = 0 }, yrange = { first = 5, last = 4 }, t = 0.025 },
+      { xrange = { first = 11, last = 4 }, y = 3,                            t = 0.025 },
+      { x = 3,                             y = 6,                            t = 0.025 },
+    },
+    cost = 7,
+    loc_vars = function(self, info_queue, card)
+      info_queue[#info_queue + 1] = G.P_CENTERS.c_soul
+      return { vars = { card.ability.extra.target, card.ability.extra.target - card.ability.extra.counted } }
+    end,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pronouns = "any_all",
+
+    calculate = function(self, card, context)
+      if context.before and next(context.poker_hands["Straight Flush"]) then
+        card.ability.extra.counted = card.ability.extra.counted + 1
+        if card.ability.extra.counted >= card.ability.extra.target then
+          card.ability.extra.counted = 0
+          if count_consumables() < G.consumeables.config.card_limit then
+            G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
+            G.E_MANAGER:add_event(Event({
+              trigger = "before",
+              func = function()
+                play_sound("timpani")
+                local new_card = SMODS.add_card({
+                  set = "Spectral",
+                  area = G.consumeables,
+                  key = "c_soul",
+                })
+                new_card:juice_up(0.3, 0.5)
+                G.GAME.consumeable_buffer = 0
+                return true
+              end,
+            }))
+            return {
+              message = localize("k_plus_soul"),
+              colour = G.C.GREEN,
+              message_card = card,
+            }
+          else
+            return { message = localize("k_no_room_ex"), colour = G.RED }
+          end
+        else
+          return { message = card.ability.extra.counted .. "/" .. card.ability.extra.target, colour = G.FILTER }
+        end
+      elseif context.before and card.ability.extra.counted > 0 then
+        card.ability.extra.counted = 0
+        return { message = localize("k_reset"), colour = G.RED }
+      end
+    end,
+  })
+
+  SMODS.Joker({
+    key = "trafficlight",
+    config = { extra = { xmult = 2 } },
+    rarity = 3,
+    atlas = "Jokers1",
+    pos = { x = 8, y = 8 },
+    flipbook_anim_states = {
+      ["go"] = { anim = { { x = 8, y = 8, t = 15 } }, loop = false, continuation = "prepare" },
+      ["prepare"] = { anim = { { x = 9, y = 8, t = 3 } }, loop = false, continuation = "stop" },
+      ["stop"] = { anim = { { x = 10, y = 8, t = 15 } }, loop = false, continuation = "almost" },
+      ["almost"] = { anim = { { x = 11, y = 8, t = 3 } }, loop = false, continuation = "go" },
+    },
+    flipbook_anim_initial_state = "go",
+    cost = 8,
+    loc_vars = function(self, info_queue, card)
+      return { vars = { card.ability.extra.xmult } }
+    end,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pronouns = "it_its",
+
+    calculate = function(self, card, context)
+      if context.press_play and not context.blueprint then
+        card.ability.extra.active = card.flipbook_anim_current_state == "go"
+            or card.flipbook_anim_current_state == "prepare"
+      end
+
+      if context.joker_main and card.ability.extra.active then
+        return { xmult = card.ability.extra.xmult }
+      end
+    end,
+  })
+
+  SMODS.Sound({
+    key = "reroll_card",
+    path = "gstpst_reroll_card.ogg"
+  })
+
+  function gstpst_reroll_card_except_cacklejack(card)
+    local candidates = {}
+    if not card then return end
+    for k, v in pairs(G.P_CENTER_POOLS.Joker) do
+      if
+          v.rarity == (card.rarity or (card.config and card.config.center and card.config.center.rarity))
+          and v.key ~= (card.key or (card.config and card.config.center and card.config.center.key) or "j_gstpst_cacklejack")
+          and (not v.in_pool or v:in_pool())
+      then
+        candidates[#candidates + 1] = v.key
+      end
+    end
+
+    card:juice_up()
+    card:set_ability(pseudorandom_element(candidates))
+  end
+
+  SMODS.Joker({
+    key = "cacklejack",
+    rarity = 2,
+    atlas = "Jokers1",
+    pos = { x = 10, y = 6 },
+    cost = 6,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    pronouns = "he_they",
+
+    calculate = function(self, card, context)
+      if context.end_of_round and not context.individual and not context.repetition and not context.game_over and not context.blueprint then
+        local me
+        for i = 1, #G.jokers.cards do
+          if G.jokers.cards[i] == card then
+            me = i
+          end
+        end
+
+        if me and me >= 1 and me <= #G.jokers.cards then
+          local candidates = {}
+          for i, v in ipairs(G.jokers.cards) do
+            if v and i > me and not (v.config and v.config.center and v.config.center.key == "j_gstpst_cacklejack") then
+              candidates[#candidates + 1] = v
+            end
+          end
+
+          if next(candidates) then
+            G.E_MANAGER:add_event(Event({
+              func = function()
+                card:juice_up()
+                local _card = pseudorandom_element(candidates, "cacklejack")
+                play_sound("gstpst_reroll_card", 1, 0.2)
+                gstpst_reroll_card_except_cacklejack(_card)
+                return true
+              end,
+            }))
+            return { message = localize("k_gstpst_replaced_ex"), colour = G.C.GREEN }
+          end
+        end
+      end
+    end,
+  })
+
   SMODS.Joker({
     key = "bettercreditcard",
     config = { extra = { bankrupt_at = 20 } },
@@ -1569,6 +2397,64 @@ do --One Armed Bandit
       e.config.button = "gstpst_spin_bandit"
     end
   end
+end
+
+if not next(SMODS.find_mod("ColdBeans")) then --Wave Goodbye, Token of Appreciation
+  SMODS.Sound({
+    key = "bye",
+    path = "gstpst_bye.ogg",
+  })
+
+  SMODS.Joker({
+    key = "wavegoodbye",
+    config = { extra = { money = 8 } },
+    rarity = 1,
+    atlas = "Jokers1",
+    pos = { x = 11, y = 6 },
+    cost = 5,
+    loc_vars = function(self, info_queue, card)
+      return { vars = { card.ability.extra.money } }
+    end,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pronouns = "she_her",
+
+    calculate = function(self, card, context)
+      if context.before and G.GAME.current_round.hands_left == 0 then
+        G.E_MANAGER:add_event(Event({
+          func = function()
+            play_sound("gstpst_bye", 1, 1)
+            return true
+          end,
+        }))
+        return { dollars = card.ability.extra.money }
+      end
+    end,
+  })
+
+  SMODS.Joker({
+    key = "tokenofappreciation",
+    config = { extra = { money = 5 } },
+    rarity = 1,
+    atlas = "Jokers1",
+    pos = { x = 2, y = 9 },
+    pixel_size = { h = 71 },
+    cost = 6,
+    loc_vars = function(self, info_queue, card)
+      return { vars = { card.ability.extra.money } }
+    end,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pronouns = "she_her",
+
+    calculate = function(self, card, context)
+      if context.buying_card and context.card.config.center.set == "Joker" and context.card ~= card and not card.getting_sliced then
+        return { dollars = card.ability.extra.money }
+      end
+    end,
+  })
 end
 
 
