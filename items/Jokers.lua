@@ -2437,7 +2437,7 @@ if not next(SMODS.find_mod("ColdBeans")) then --Wave Goodbye, Token of Appreciat
     rarity = 1,
     atlas = "Jokers1",
     pos = { x = 2, y = 9 },
-    pixel_size = { h = 71 },
+    pixel_size = { h = 67 },
     cost = 6,
     loc_vars = function(self, info_queue, card)
       return { vars = { card.ability.extra.money } }
