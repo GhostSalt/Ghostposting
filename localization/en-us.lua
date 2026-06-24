@@ -328,7 +328,7 @@ return {
                     {
                         "When {C:money}sold{}, Joker to",
                         "the left {C:attention}inherits{} this",
-                        "{C:attention}Joker's{} extra {C:green}sell value{}"
+                        "{C:attention}Joker's{} extra {C:money}sell value{}"
                     }
                 }
             },
