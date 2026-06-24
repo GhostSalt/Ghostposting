@@ -8,7 +8,7 @@ return {
                     "Gains {C:white,X:mult}X#1#{} Mult if",
                     "played hand contains",
                     "a {C:attention}9{}, {C:attention}8{} or {C:attention}7{}",
-                    "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)"
+                    "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult){}"
                 }
             },
             j_gstpst_markiplier_1        = {
@@ -18,7 +18,7 @@ return {
                     "Gains {C:white,X:mult}X#1#{} Mult if",
                     "played hand contains",
                     "a {C:attention}9{}, {C:attention}8{} or {C:attention}7{}",
-                    "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)"
+                    "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult){}"
                 }
             },
             j_gstpst_markiplier_2        = {
@@ -28,7 +28,7 @@ return {
                     "Gains {C:white,X:mult}X#1#{} Mult if",
                     "played hand contains",
                     "a {C:attention}9{}, {C:attention}8{} or {C:attention}7{}",
-                    "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)"
+                    "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult){}"
                 }
             },
             j_gstpst_markiplier_3        = {
@@ -38,7 +38,7 @@ return {
                     "Gains {C:white,X:mult}X#1#{} Mult if",
                     "played hand contains",
                     "a {C:attention}9{}, {C:attention}8{} or {C:attention}7{}",
-                    "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)"
+                    "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult){}"
                 }
             },
             j_gstpst_markiplier_4        = {
@@ -48,7 +48,7 @@ return {
                     "Gains {C:white,X:mult}X#1#{} Mult if",
                     "played hand contains",
                     "a {C:attention}9{}, {C:attention}8{} or {C:attention}7{}",
-                    "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)"
+                    "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult){}"
                 }
             },
             j_gstpst_markiplier_5        = {
@@ -58,7 +58,7 @@ return {
                     "Gains {C:white,X:mult}X#1#{} Mult if",
                     "played hand contains",
                     "a {C:attention}9{}, {C:attention}8{} or {C:attention}7{}",
-                    "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)"
+                    "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult){}"
                 }
             },
             j_gstpst_markiplier_6        = {
@@ -68,7 +68,7 @@ return {
                     "Gains {C:white,X:mult}X#1#{} Mult if",
                     "played hand contains",
                     "a {C:attention}9{}, {C:attention}8{} or {C:attention}7{}",
-                    "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)"
+                    "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult){}"
                 }
             },
             j_gstpst_markiplier_7        = {
@@ -78,7 +78,7 @@ return {
                     "Gains {C:white,X:mult}X#1#{} Mult if",
                     "played hand contains",
                     "a {C:attention}9{}, {C:attention}8{} or {C:attention}7{}",
-                    "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)"
+                    "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult){}"
                 }
             },
             j_gstpst_markiplier_8        = {
@@ -88,7 +88,7 @@ return {
                     "Gains {C:white,X:mult}X#1#{} Mult if",
                     "played hand contains",
                     "a {C:attention}9{}, {C:attention}8{} or {C:attention}7{}",
-                    "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)"
+                    "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult){}"
                 }
             },
             j_gstpst_xnopyt              = {
@@ -98,7 +98,7 @@ return {
                     "Gains {C:white,X:mult}X#1#{} Mult",
                     "if played hand",
                     "contains a {C:attention}10{}",
-                    "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)"
+                    "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult){}"
                 }
             },
             j_gstpst_fashionismypassion  = {

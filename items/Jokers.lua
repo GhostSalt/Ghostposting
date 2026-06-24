@@ -563,8 +563,6 @@ if not next(SMODS.find_mod("ColdBeans")) then --Fashion is my Passion, President
     end,
   })
 
-  print("WARNING!!!!!!!!!!!!!!!!!!!!!!!!!! FIX PIPELINE PUNCH'S THINGY")
-
   SMODS.Joker({
     key = "pipelinepunch",
     config = { extra = { hands_left = 10, odds = 2 } },
