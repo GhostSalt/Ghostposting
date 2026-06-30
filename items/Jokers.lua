@@ -432,6 +432,41 @@ do --Joker Kitchen
     py = 95
   }
 
+  SMODS.Sound({
+    key = "jokerkitchen_intro",
+    path = "gstpst_jokerkitchen_intro.ogg"
+  })
+
+  SMODS.Sound({
+    key = "jokerkitchen_horsemeat",
+    path = "gstpst_jokerkitchen_horsemeat.ogg"
+  })
+
+  SMODS.Sound({
+    key = "jokerkitchen_redhotchilipeppers",
+    path = "gstpst_jokerkitchen_redhotchilipeppers.ogg"
+  })
+
+  SMODS.Sound({
+    key = "jokerkitchen_grassofdeath",
+    path = "gstpst_jokerkitchen_grassofdeath.ogg"
+  })
+
+  SMODS.Sound({
+    key = "jokerkitchen_oilfromiraq",
+    path = "gstpst_jokerkitchen_oilfromiraq.ogg"
+  })
+
+  SMODS.Sound({
+    key = "jokerkitchen_cheesefromsaopaolofrombrazil",
+    path = "gstpst_jokerkitchen_cheesefromsaopaolofrombrazil.ogg"
+  })
+
+  SMODS.Sound({
+    key = "jokerkitchen_breadmadeinturkey",
+    path = "gstpst_jokerkitchen_breadmadeinturkey.ogg"
+  })
+
   SMODS.Joker({
     key = "jokerkitchen",
     config = { extra = { used_so_far = {} } },
@@ -530,11 +565,15 @@ do --Joker Kitchen
         G.E_MANAGER:add_event(Event({
           func = function()
             card:flipbook_set_anim_state(key)
+            play_sound("gstpst_jokerkitchen_"..key, 1, 0.8)
             return true
           end
         }))
       end
-    end
+    end,
+    add_to_deck = function(self, card, from_debuff)
+      play_sound("gstpst_jokerkitchen_intro", 1, 0.8)
+    end,
   })
 end
 
