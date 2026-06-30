@@ -152,6 +152,17 @@ return {
                     "{C:inactive}(A, 9, 7, 5, 3){}"
                 }
             },
+            j_gstpst_jokerkitchen      = {
+                name = "Joker Kitchen",
+                text =
+                {
+                    "Adds {C:attention}6{} new {C:tarot}Tarot{} cards",
+                    "to the {C:tarot}Tarot{} pool",
+                    "Use them all to turn",
+                    "this {C:attention}Joker{} into a",
+                    "{C:attention}Crazy Hamburger{}"
+                }
+            },
             j_matador                    = {
                 name = "Red Matador",
                 text = {
@@ -414,6 +425,44 @@ return {
                     "{C:attention}Jokers{} from the {C:money}shop{}"
                 }
             },
+        },
+        Tarot = {
+            c_gstpst_horsemeat = {
+                name = "Horse Meat",
+                text = {
+                    "dfkgjn"
+                }
+            },
+            c_gstpst_redhotchilipeppers = {
+                name = "Red Hot Chili Peppers",
+                text = {
+                    "dfkgjn"
+                }
+            },
+            c_gstpst_grassofdeath = {
+                name = "Grass of Death",
+                text = {
+                    "dfkgjn"
+                }
+            },
+            c_gstpst_oilfromiraq = {
+                name = "Oil From Iraq",
+                text = {
+                    "dfkgjn"
+                }
+            },
+            c_gstpst_cheesefromsaopaolofrombrazil = {
+                name = "Cheese from São Paolo from Brazil",
+                text = {
+                    "dfkgjn"
+                }
+            },
+            c_gstpst_breadmadeinturkey = {
+                name = "Bread Made in Turkey",
+                text = {
+                    "dfkgjn"
+                }
+            }
         },
         Back = {
             b_gstpst_distracted = {

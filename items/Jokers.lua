@@ -187,7 +187,7 @@ do --Tom Scott
   })
 end
 
-if not next(SMODS.find_mod("ColdBeans")) then --Fashion is my Passion, President Hathaway, Chuck McGill, Charles, Miracle Machine, Green / Blue Matador, Bozo Brain, The Last Supper, Pipeline Punch, Intentionally Blank, Zirconium Pants
+if not next(SMODS.find_mod("ColdBeans")) then --Fashion is my Passion, President Hathaway, Chuck McGill, Charles, Miracle Machine
   SMODS.Joker({
     key = "fashionismypassion",
     config = { extra = { chips = 50 } },
@@ -422,9 +422,123 @@ if not next(SMODS.find_mod("ColdBeans")) then --Fashion is my Passion, President
       end
     end,
   })
+end
 
+do --Joker Kitchen
+  SMODS.Atlas {
+    key = "JokerKitchen",
+    path = "GhostpostingJokerKitchen.png",
+    px = 71,
+    py = 95
+  }
 
+  SMODS.Joker({
+    key = "jokerkitchen",
+    config = { extra = { used_so_far = {} } },
+    rarity = 2,
+    atlas = "JokerKitchen",
+    pos = { x = 0, y = 0 },
+    flipbook_anim_states = {
+      passive = {
+        anim = {
+          { xrange = { first = 0, last = 8 }, yrange = { first = 0, last = 1 }, t = 0.1 },
+          { x = 0,                            y = 2,                            t = 0.1 }
+        },
+        loop = true
+      },
+      horsemeat = {
+        anim = {
+          { xrange = { first = 1, last = 8 }, y = 2, t = 0.1 },
+          { xrange = { first = 0, last = 8 }, y = 3, t = 0.1 },
+          { xrange = { first = 0, last = 4 }, y = 4, t = 0.1 },
+        },
+        loop = false,
+        continuation = "passive"
+      },
+      redhotchilipeppers = {
+        anim = {
+          { xrange = { first = 5, last = 8 }, y = 4,                            t = 0.1 },
+          { xrange = { first = 0, last = 8 }, yrange = { first = 5, last = 6 }, t = 0.1 },
+          { xrange = { first = 0, last = 2 }, y = 7,                            t = 0.1 },
+        },
+        loop = false,
+        continuation = "passive"
+      },
+      grassofdeath = {
+        anim = {
+          { xrange = { first = 3, last = 8 },  y = 7,                            t = 0.1 },
+          { xrange = { first = 9, last = 17 }, yrange = { first = 0, last = 1 }, t = 0.1 },
+        },
+        loop = false,
+        continuation = "passive"
+      },
+      oilfromiraq = {
+        anim = {
+          { xrange = { first = 9, last = 17 }, yrange = { first = 2, last = 3 }, t = 0.1 },
+          { xrange = { first = 9, last = 11 }, y = 4,                            t = 0.1 },
+        },
+        loop = false,
+        continuation = "passive"
+      },
+      cheesefromsaopaolofrombrazil = {
+        anim = {
+          { xrange = { first = 12, last = 17 }, y = 4,                            t = 0.1 },
+          { xrange = { first = 9, last = 17 },  yrange = { first = 5, last = 7 }, t = 0.1 },
+          { xrange = { first = 18, last = 26 }, y = 0,                            t = 0.1 },
+        },
+        loop = false,
+        continuation = "passive"
+      },
+      breadmadeinturkey = {
+        anim = {
+          { xrange = { first = 18, last = 26 }, yrange = { first = 1, last = 3 }, t = 0.1 },
+          { xrange = { first = 18, last = 22 }, y = 4,                            t = 0.1 },
+        },
+        loop = false,
+        continuation = "passive"
+      }
+    },
+    flipbook_anim_initial_state = "passive",
+    cost = 7,
+    loc_vars = function(self, info_queue, card)
+      return {}
+    end,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pronouns = "he_him",
 
+    calculate = function(self, card, context)
+      if context.using_consumeable then
+        local key
+        if context.consumeable.config.center.key == "c_gstpst_horsemeat" then
+          key = "horsemeat"
+        elseif context.consumeable.config.center.key == "c_gstpst_redhotchilipeppers" then
+          key = "redhotchilipeppers"
+        elseif context.consumeable.config.center.key == "c_gstpst_grassofdeath" then
+          key = "grassofdeath"
+        elseif context.consumeable.config.center.key == "c_gstpst_oilfromiraq" then
+          key = "oilfromiraq"
+        elseif context.consumeable.config.center.key == "c_gstpst_cheesefromsaopaolofrombrazil" then
+          key = "cheesefromsaopaolofrombrazil"
+        elseif context.consumeable.config.center.key == "c_gstpst_breadmadeinturkey" then
+          key = "breadmadeinturkey"
+        else
+          return
+        end
+
+        G.E_MANAGER:add_event(Event({
+          func = function()
+            card:flipbook_set_anim_state(key)
+            return true
+          end
+        }))
+      end
+    end
+  })
+end
+
+if not next(SMODS.find_mod("ColdBeans")) then --Green / Blue Matador, Bozo Brain, The Last Supper, Pipeline Punch, Intentionally Blank, Zirconium Pants
   SMODS.Joker({
     key = "greenmatador",
     config = { extra = { current_money = 0, added_money = 1 } },
@@ -987,6 +1101,7 @@ do --Boris
         anim = { { x = 5, y = 0, t = 5.5 } }, loop = false, continuation = "passive"
       }
     },
+    flipbook_anim_initial_state = "passive",
     cost = 7,
     loc_vars = function(self, info_queue, card)
       local ranks_concat = ""
