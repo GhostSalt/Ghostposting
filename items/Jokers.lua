@@ -68,7 +68,12 @@ if not next(SMODS.find_mod("ColdBeans")) then --Markiplier
       card:flipbook_set_anim_state("happy")
     end,
     calculate = function(self, card, context)
-      if context.joker_main and card.ability.extra.current_xmult > 1 then return { xmult = card.ability.extra.current_xmult } end
+      if context.joker_main and card.ability.extra.current_xmult > 1 then
+        return {
+          xmult = card.ability.extra
+              .current_xmult
+        }
+      end
 
       if context.before and not context.blueprint then
         for _, v in ipairs(context.scoring_hand) do
@@ -163,7 +168,12 @@ do --Tom Scott
       card:flipbook_set_anim_state("blown")
     end,
     calculate = function(self, card, context)
-      if context.joker_main and card.ability.extra.current_xmult > 1 then return { xmult = card.ability.extra.current_xmult } end
+      if context.joker_main and card.ability.extra.current_xmult > 1 then
+        return {
+          xmult = card.ability.extra
+              .current_xmult
+        }
+      end
 
       if context.before and not context.blueprint then
         for _, v in ipairs(context.scoring_hand) do
@@ -458,14 +468,21 @@ do --Joker Kitchen
   })
 
   SMODS.Sound({
-    key = "jokerkitchen_cheesefromsaopaolofrombrazil",
-    path = "gstpst_jokerkitchen_cheesefromsaopaolofrombrazil.ogg"
+    key = "jokerkitchen_cheesefromsaopaulofrombrazil",
+    path = "gstpst_jokerkitchen_cheesefromsaopaulofrombrazil.ogg"
   })
 
   SMODS.Sound({
     key = "jokerkitchen_breadmadeinturkey",
     path = "gstpst_jokerkitchen_breadmadeinturkey.ogg"
   })
+
+  for i = 1, 7 do
+    SMODS.Sound({
+      key = "crazyhamburger-0" .. i,
+      path = "gstpst_crazyhamburger-0" .. i .. ".ogg"
+    })
+  end
 
   SMODS.Joker({
     key = "jokerkitchen",
@@ -515,7 +532,7 @@ do --Joker Kitchen
         loop = false,
         continuation = "passive"
       },
-      cheesefromsaopaolofrombrazil = {
+      cheesefromsaopaulofrombrazil = {
         anim = {
           { xrange = { first = 12, last = 17 }, y = 4,                            t = 0.1 },
           { xrange = { first = 9, last = 17 },  yrange = { first = 5, last = 7 }, t = 0.1 },
@@ -536,9 +553,14 @@ do --Joker Kitchen
     flipbook_anim_initial_state = "passive",
     cost = 7,
     loc_vars = function(self, info_queue, card)
-      return {}
+      info_queue[#info_queue + 1] = G.P_CENTERS.j_gstpst_crazyhamburger
+      local count = 0
+      for _, v in pairs(card.ability.extra.used_so_far) do
+        count = count + 1
+      end
+      return { vars = { count } }
     end,
-    blueprint_compat = true,
+    blueprint_compat = false,
     eternal_compat = true,
     perishable_compat = true,
     pronouns = "he_him",
@@ -554,26 +576,154 @@ do --Joker Kitchen
           key = "grassofdeath"
         elseif context.consumeable.config.center.key == "c_gstpst_oilfromiraq" then
           key = "oilfromiraq"
-        elseif context.consumeable.config.center.key == "c_gstpst_cheesefromsaopaolofrombrazil" then
-          key = "cheesefromsaopaolofrombrazil"
+        elseif context.consumeable.config.center.key == "c_gstpst_cheesefromsaopaulofrombrazil" then
+          key = "cheesefromsaopaulofrombrazil"
         elseif context.consumeable.config.center.key == "c_gstpst_breadmadeinturkey" then
           key = "breadmadeinturkey"
         else
           return
         end
 
+        card.ability.extra.used_so_far[key] = true
+
+        local count = 0
+        for _, v in pairs(card.ability.extra.used_so_far) do
+          count = count + 1
+        end
+        if count >= 6 then
+          G.E_MANAGER:add_event(Event({
+            func = function()
+              G.E_MANAGER:add_event(Event({
+                trigger = "before",
+                delay = 0.4,
+                func = function()
+                  card:flip(); play_sound("card1", 1); card:juice_up(0.3, 0.3); return true
+                end
+              }))
+              delay(0.2)
+              G.E_MANAGER:add_event(Event({
+                trigger = "before",
+                delay = 0.2,
+                func = function()
+                  card:set_ability("j_gstpst_crazyhamburger")
+                  card.flipbook_anim_t = 0
+                  card.flipbook_anim = format_flipbook_anim(card.config.center.flipbook_anim)
+                  play_sound("gstpst_crazyhamburger-0" .. math.random(7), 1, 0.8)
+                  return true
+                end
+              }))
+              G.E_MANAGER:add_event(Event({
+                trigger = "before",
+                delay = 0.1,
+                func = function()
+                  card:flip()
+                  play_sound("tarot2", 1, 0.6)
+                  return true
+                end
+              }))
+              return true
+            end
+          }))
+        else
+          G.E_MANAGER:add_event(Event({
+            func = function()
+              card:flipbook_set_anim_state(key)
+              play_sound("gstpst_jokerkitchen_" .. key, 1, 0.8)
+              return true
+            end
+          }))
+        end
+      end
+    end,
+    set_ability = function(self, card, initial, delay_sprites)
+      card.ability.extra.used_so_far = {}
+    end,
+    add_to_deck = function(self, card, from_debuff)
+      play_sound("gstpst_jokerkitchen_intro", 1, 0.8)
+    end
+  })
+
+  SMODS.Joker({
+    key = "crazyhamburger",
+    config = { extra = { added_xmult = 0.5, current_xmult = 1 } },
+    rarity = 4,
+    atlas = "JokerKitchen",
+    pos = { x = 23, y = 4 },
+    flipbook_anim = {
+      { xrange = { first = 23, last = 26 }, y = 4,                            t = 0.1 },
+      { xrange = { first = 18, last = 26 }, yrange = { first = 5, last = 7 }, t = 0.1 }
+    },
+    cost = 20,
+    loc_vars = function(self, info_queue, card)
+      return { vars = { card.ability.extra.added_xmult, card.ability.extra.current_xmult } }
+    end,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pronouns = "it_its",
+
+    calculate = function(self, card, context)
+      if context.joker_main and card.ability.extra.current_xmult > 1 then
+        return { xmult = card.ability.extra.current_xmult }
+      end
+
+      if context.before and (context.scoring_name == "Straight" or G.GAME.hands[context.scoring_name].order < G.GAME.hands["Straight"].order) then
+        card.ability.extra.current_xmult = card.ability.extra.current_xmult + card.ability.extra.added_xmult
+        return { message = localize("k_upgrade_ex") }
+      end
+
+      if context.individual and context.cardarea == G.play then
+        local _card = context.other_card
         G.E_MANAGER:add_event(Event({
+          trigger = "before",
+          delay = 0.4,
           func = function()
-            card:flipbook_set_anim_state(key)
-            play_sound("gstpst_jokerkitchen_"..key, 1, 0.8)
+            _card:flip(); play_sound("card1", 1); card:juice_up(); _card:juice_up(0.3, 0.3); return true
+          end
+        }))
+        delay(0.2)
+        G.E_MANAGER:add_event(Event({
+          trigger = "before",
+          delay = 0.2,
+          func = function()
+            local selectable_suits = {}
+            for k, v in pairs(SMODS.Suits) do
+              if k ~= _card.base.suit then
+                selectable_suits[k] = v
+              end
+            end
+            selectable_suits[_card.base.suit] = nil
+            local chosen_suit = (pseudorandom_element(selectable_suits, pseudoseed("crazyhamburgersuit")) or { key = "Spades" })
+                .key
+
+            local selectable_ranks = {}
+            for k, v in pairs(SMODS.Ranks) do
+              if k ~= _card.base.id then
+                selectable_ranks[k] = v
+              end
+            end
+            selectable_ranks[_card.base.id] = nil
+            local chosen_rank = (pseudorandom_element(selectable_ranks, pseudoseed("crazyhamburgerrank")) or { key = "Ace" })
+                .key
+
+            SMODS.change_base(_card, chosen_suit, chosen_rank)
+            return true
+          end
+        }))
+        G.E_MANAGER:add_event(Event({
+          trigger = "before",
+          delay = 0.1,
+          func = function()
+            _card:flip()
+            play_sound("tarot2", 1, 0.6)
             return true
           end
         }))
       end
     end,
-    add_to_deck = function(self, card, from_debuff)
-      play_sound("gstpst_jokerkitchen_intro", 1, 0.8)
-    end,
+    in_pool = function()
+      return false
+    end
   })
 end
 
@@ -1227,7 +1377,8 @@ do --Boris
     local cycles = {}
 
     for i = 1, G.GAME.gstpst_current_boris_card.ability.extra.no_of_ranks do
-      G.GAME.gstpst_current_boris_card.ability.extra.ranks[i] = G.GAME.gstpst_current_boris_card.ability.extra.ranks[i] or 1
+      G.GAME.gstpst_current_boris_card.ability.extra.ranks[i] = G.GAME.gstpst_current_boris_card.ability.extra.ranks[i] or
+          1
 
       cycles[#cycles + 1] =
       {
@@ -1267,7 +1418,8 @@ do --Boris
       }
     end
 
-    local boris_sprite = SMODS.create_sprite(0, 0, G.gstpst_borisUIX / 100, G.gstpst_borisUIY / 100, "gstpst_BorisUI", { x = 0, y = 0 })
+    local boris_sprite = SMODS.create_sprite(0, 0, G.gstpst_borisUIX / 100, G.gstpst_borisUIY / 100, "gstpst_BorisUI",
+      { x = 0, y = 0 })
 
     local t = create_UIBox_generic_options({
       back_func = "gstpst_leave_boris_more_menu",
@@ -1360,7 +1512,7 @@ do --Cross
     local current_mult = G.GAME.blind.chips / (original_chips / G.GAME.blind.mult)
     local final_chips = (original_chips / G.GAME.blind.mult) * (current_mult) + mod_add
     local chip_mod
-    if type(G.GAME.blind.chips) ~= 'table' then
+    if type(G.GAME.blind.chips) ~= "table" then
       chip_mod = math.ceil(math.abs(final_chips - G.GAME.blind.chips) / 120)
     else
       chip_mod = ((final_chips - G.GAME.blind.chips):abs() / 120):ceil()
@@ -1368,14 +1520,14 @@ do --Cross
     local step = 0
     if G.GAME.blind.chips < final_chips then
       G.E_MANAGER:add_event(Event({
-        trigger = 'after',
+        trigger = "after",
         blocking = true,
         func = function()
           G.GAME.blind.chips = G.GAME.blind.chips + G.SETTINGS.GAMESPEED * chip_mod
           if G.GAME.blind.chips < final_chips then
             G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
             if step % 5 == 0 then
-              play_sound('chips1', 0.8 + (step * 0.005))
+              play_sound("chips1", 0.8 + (step * 0.005))
             end
             step = step + 1
           else
@@ -1388,14 +1540,14 @@ do --Cross
       }))
     else
       G.E_MANAGER:add_event(Event({
-        trigger = 'after',
+        trigger = "after",
         blocking = true,
         func = function()
           G.GAME.blind.chips = G.GAME.blind.chips - G.SETTINGS.GAMESPEED * chip_mod
           if G.GAME.blind.chips > final_chips then
             G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
             if step % 5 == 0 then
-              play_sound('chips1', 0.8 + (step * 0.005))
+              play_sound("chips1", 0.8 + (step * 0.005))
             end
             step = step - 1
           else
@@ -1488,8 +1640,8 @@ do --Cross
   function Card:set_sprites(center, front)
     set_sprites_ref(self, center, front)
     if center == G.P_CENTERS.j_gstpst_cross and (center.discovered or self.params.bypass_discovery_center) then
-      self.children.center.role.r_bond = 'Weak'
-      self.children.center.role.role_type = 'Major'
+      self.children.center.role.r_bond = "Weak"
+      self.children.center.role.role_type = "Major"
       local t = self.T
       self.children.center.T = setmetatable({}, {
         __index = function(_, k)
@@ -2391,12 +2543,17 @@ do --One Armed Bandit
 
       local reel_bonus_start = G.gstpst_onearmedbandit_reels.reel_bonus[self.ability.extra.reel_states.reel_bonus]
 
-      self.ability.extra.reel_states.reel_a = G.reel_test and G.reel_test[1] or pseudorandom("gstpst_onearmedbandit_a", 1, #G.gstpst_onearmedbandit_reels.reel_a)
-      self.ability.extra.reel_states.reel_b = G.reel_test and G.reel_test[2] or pseudorandom("gstpst_onearmedbandit_b", 1, #G.gstpst_onearmedbandit_reels.reel_b)
-      self.ability.extra.reel_states.reel_c = G.reel_test and G.reel_test[3] or pseudorandom("gstpst_onearmedbandit_c", 1, #G.gstpst_onearmedbandit_reels.reel_c)
-      self.ability.extra.reel_states.reel_bonus = G.reel_test and G.reel_test[4] or pseudorandom("gstpst_onearmedbandit_bonus", 1, #G.gstpst_onearmedbandit_reels.reel_bonus)
+      self.ability.extra.reel_states.reel_a = G.reel_test and G.reel_test[1] or
+          pseudorandom("gstpst_onearmedbandit_a", 1, #G.gstpst_onearmedbandit_reels.reel_a)
+      self.ability.extra.reel_states.reel_b = G.reel_test and G.reel_test[2] or
+          pseudorandom("gstpst_onearmedbandit_b", 1, #G.gstpst_onearmedbandit_reels.reel_b)
+      self.ability.extra.reel_states.reel_c = G.reel_test and G.reel_test[3] or
+          pseudorandom("gstpst_onearmedbandit_c", 1, #G.gstpst_onearmedbandit_reels.reel_c)
+      self.ability.extra.reel_states.reel_bonus = G.reel_test and G.reel_test[4] or
+          pseudorandom("gstpst_onearmedbandit_bonus", 1, #G.gstpst_onearmedbandit_reels.reel_bonus)
 
-      local symbol_a, symbol_b, symbol_c, symbol_bonus = G.gstpst_onearmedbandit_reels.reel_a[self.ability.extra.reel_states.reel_a],
+      local symbol_a, symbol_b, symbol_c, symbol_bonus =
+          G.gstpst_onearmedbandit_reels.reel_a[self.ability.extra.reel_states.reel_a],
           G.gstpst_onearmedbandit_reels.reel_b[self.ability.extra.reel_states.reel_b],
           G.gstpst_onearmedbandit_reels.reel_c[self.ability.extra.reel_states.reel_c],
           G.gstpst_onearmedbandit_reels.reel_bonus[self.ability.extra.reel_states.reel_bonus]
@@ -2535,7 +2692,10 @@ do --One Armed Bandit
   G.FUNCS.gstpst_spin_bandit = function(e)
     G.GAME.STOP_USE = (G.GAME.STOP_USE or 0) + 1
     e.config.ref_table.ability.extra.is_spinning = true
-    if e.config.ref_table.config.center.gstpst_bandit_spin then e.config.ref_table.config.center.gstpst_bandit_spin(e.config.ref_table) end
+    if e.config.ref_table.config.center.gstpst_bandit_spin then
+      e.config.ref_table.config.center.gstpst_bandit_spin(e
+        .config.ref_table)
+    end
   end
 
   G.FUNCS.gstpst_can_spin_bandit = function(e)
@@ -2633,7 +2793,7 @@ do --Buttons on Jokers
       nodes = {
         {
           n = G.UIT.C,
-          config = { ref_table = card, align = "cr", padding = 0.1, r = 0.08, minw = 1.25, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'sell_card', func = 'can_sell_card' },
+          config = { ref_table = card, align = "cr", padding = 0.1, r = 0.08, minw = 1.25, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = "sell_card", func = "can_sell_card" },
           nodes = {
             { n = G.UIT.B, config = { w = 0.1, h = 0.6 } },
             {
@@ -2644,15 +2804,15 @@ do --Buttons on Jokers
                   n = G.UIT.R,
                   config = { align = "cm", maxw = 1.25 },
                   nodes = {
-                    { n = G.UIT.T, config = { text = localize('b_sell'), colour = G.C.UI.TEXT_LIGHT, scale = 0.4, shadow = true } }
+                    { n = G.UIT.T, config = { text = localize("b_sell"), colour = G.C.UI.TEXT_LIGHT, scale = 0.4, shadow = true } }
                   }
                 },
                 {
                   n = G.UIT.R,
                   config = { align = "cm" },
                   nodes = {
-                    { n = G.UIT.T, config = { text = localize('$'), colour = G.C.WHITE, scale = 0.4, shadow = true } },
-                    { n = G.UIT.T, config = { ref_table = card, ref_value = 'sell_cost_label', colour = G.C.WHITE, scale = 0.55, shadow = true } }
+                    { n = G.UIT.T, config = { text = localize("$"), colour = G.C.WHITE, scale = 0.4, shadow = true } },
+                    { n = G.UIT.T, config = { ref_table = card, ref_value = "sell_cost_label", colour = G.C.WHITE, scale = 0.55, shadow = true } }
                   }
                 }
               }
@@ -2670,7 +2830,7 @@ do --Buttons on Jokers
         nodes = {
           {
             n = G.UIT.C,
-            config = { ref_table = card, align = "cr", maxw = 1.25, padding = 0.1, r = 0.08, minw = 1.25, minh = (card.area and card.area.config.type == 'joker') and 0 or 1, hover = true, shadow = true, colour = G.C.RED, button = "gstpst_spin_bandit", func = "gstpst_can_spin_bandit" },
+            config = { ref_table = card, align = "cr", maxw = 1.25, padding = 0.1, r = 0.08, minw = 1.25, minh = (card.area and card.area.config.type == "joker") and 0 or 1, hover = true, shadow = true, colour = G.C.RED, button = "gstpst_spin_bandit", func = "gstpst_can_spin_bandit" },
             nodes = {
               {
                 n = G.UIT.R,
@@ -2698,16 +2858,16 @@ do --Buttons on Jokers
         nodes = {
           {
             n = G.UIT.C,
-            config = { padding = 0.15, align = 'cl' },
+            config = { padding = 0.15, align = "cl" },
             nodes = {
               {
                 n = G.UIT.R,
-                config = { align = 'cl' },
+                config = { align = "cl" },
                 nodes = { sell }
               },
               {
                 n = G.UIT.R,
-                config = { align = 'cl' },
+                config = { align = "cl" },
                 nodes = { bandit_spin }
               }
             }
@@ -2726,10 +2886,10 @@ do --Buttons on Jokers
         nodes = {
           {
             n = G.UIT.C,
-            config = { ref_table = card, align = "cr", maxw = 1.25, padding = 0.1, r = 0.08, minw = 1.25, minh = (card.area and card.area.config.type == 'joker') and 0 or 1, hover = true, shadow = true, colour = G.C.RED, button = "gstpst_run_boris_menu", func = "gstpst_can_run_boris_menu" },
+            config = { ref_table = card, align = "cr", maxw = 1.25, padding = 0.1, r = 0.08, minw = 1.25, minh = (card.area and card.area.config.type == "joker") and 0 or 1, hover = true, shadow = true, colour = G.C.RED, button = "gstpst_run_boris_menu", func = "gstpst_can_run_boris_menu" },
             nodes = {
               { n = G.UIT.B, config = { w = 0.1, h = 0.6 } },
-              { n = G.UIT.T, config = { text = localize('b_gstpst_more'), colour = G.C.UI.TEXT_LIGHT, scale = 0.55, shadow = true } }
+              { n = G.UIT.T, config = { text = localize("b_gstpst_more"), colour = G.C.UI.TEXT_LIGHT, scale = 0.55, shadow = true } }
             }
           }
         }
@@ -2741,16 +2901,16 @@ do --Buttons on Jokers
         nodes = {
           {
             n = G.UIT.C,
-            config = { padding = 0.15, align = 'cl' },
+            config = { padding = 0.15, align = "cl" },
             nodes = {
               {
                 n = G.UIT.R,
-                config = { align = 'cl' },
+                config = { align = "cl" },
                 nodes = { sell }
               },
               {
                 n = G.UIT.R,
-                config = { align = 'cl' },
+                config = { align = "cl" },
                 nodes = { boris_more }
               }
             }
@@ -2765,11 +2925,11 @@ do --Buttons on Jokers
       nodes = {
         {
           n = G.UIT.C,
-          config = { padding = 0.15, align = 'cl' },
+          config = { padding = 0.15, align = "cl" },
           nodes = {
             {
               n = G.UIT.R,
-              config = { align = 'cl' },
+              config = { align = "cl" },
               nodes = { sell }
             }
           }

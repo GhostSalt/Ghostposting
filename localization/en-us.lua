@@ -1,7 +1,7 @@
 return {
     descriptions = {
         Joker = {
-            j_gstpst_markiplier          = {
+            j_gstpst_markiplier            = {
                 name = "Markiplier",
                 text =
                 {
@@ -11,7 +11,7 @@ return {
                     "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult){}"
                 }
             },
-            j_gstpst_markiplier_1        = {
+            j_gstpst_markiplier_1          = {
                 name = "Multiplier",
                 text =
                 {
@@ -21,7 +21,7 @@ return {
                     "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult){}"
                 }
             },
-            j_gstpst_markiplier_2        = {
+            j_gstpst_markiplier_2          = {
                 name = "Market Pire",
                 text =
                 {
@@ -31,7 +31,7 @@ return {
                     "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult){}"
                 }
             },
-            j_gstpst_markiplier_3        = {
+            j_gstpst_markiplier_3          = {
                 name = "Marlinshire",
                 text =
                 {
@@ -41,7 +41,7 @@ return {
                     "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult){}"
                 }
             },
-            j_gstpst_markiplier_4        = {
+            j_gstpst_markiplier_4          = {
                 name = "For Suppliers",
                 text =
                 {
@@ -51,7 +51,7 @@ return {
                     "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult){}"
                 }
             },
-            j_gstpst_markiplier_5        = {
+            j_gstpst_markiplier_5          = {
                 name = "Mark (A Player)",
                 text =
                 {
@@ -61,7 +61,7 @@ return {
                     "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult){}"
                 }
             },
-            j_gstpst_markiplier_6        = {
+            j_gstpst_markiplier_6          = {
                 name = "Market Buyer",
                 text =
                 {
@@ -71,7 +71,7 @@ return {
                     "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult){}"
                 }
             },
-            j_gstpst_markiplier_7        = {
+            j_gstpst_markiplier_7          = {
                 name = "Park For Hire",
                 text =
                 {
@@ -81,7 +81,7 @@ return {
                     "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult){}"
                 }
             },
-            j_gstpst_markiplier_8        = {
+            j_gstpst_markiplier_8          = {
                 name = "Welcome",
                 text =
                 {
@@ -91,7 +91,7 @@ return {
                     "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult){}"
                 }
             },
-            j_gstpst_xnopyt              = {
+            j_gstpst_xnopyt                = {
                 name = "Tom Scott",
                 text =
                 {
@@ -101,7 +101,7 @@ return {
                     "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult){}"
                 }
             },
-            j_gstpst_fashionismypassion  = {
+            j_gstpst_fashionismypassion    = {
                 name = "Fashion is my Passion",
                 text =
                 {
@@ -109,7 +109,7 @@ return {
                     "give {C:chips}+#1#{} Chips when scored",
                 }
             },
-            j_gstpst_presidenthathaway   = {
+            j_gstpst_presidenthathaway     = {
                 name = "President Hathaway",
                 text = {
                     {
@@ -123,7 +123,7 @@ return {
                     },
                 },
             },
-            j_gstpst_chuckmcgill         = {
+            j_gstpst_chuckmcgill           = {
                 name = 'Charles "Chuck" McGill{}',
                 text =
                 {
@@ -133,7 +133,7 @@ return {
                     "{C:inactive}(Previous hand: {C:attention}#2#{C:inactive}){}"
                 }
             },
-            j_gstpst_charles             = {
+            j_gstpst_charles               = {
                 name = "Charles",
                 text =
                 {
@@ -143,7 +143,7 @@ return {
                     "{S:1.1,C:red,E:2}self destructs{}"
                 }
             },
-            j_gstpst_miraclemachine      = {
+            j_gstpst_miraclemachine        = {
                 name = "Miracle Machine",
                 text =
                 {
@@ -152,18 +152,35 @@ return {
                     "{C:inactive}(A, 9, 7, 5, 3){}"
                 }
             },
-            j_gstpst_jokerkitchen      = {
+            j_gstpst_jokerkitchen          = {
                 name = "Joker Kitchen",
                 text =
                 {
                     "Adds {C:attention}6{} new {C:tarot}Tarot{} cards",
-                    "to the {C:tarot}Tarot{} pool",
+                    "to the {C:tarot}Tarot{} card pool",
                     "Use them all to turn",
                     "this {C:attention}Joker{} into a",
-                    "{C:attention}Crazy Hamburger{}"
+                    "{C:attention}Crazy Hamburger{}",
+                    "{C:inactive}(#1#/6 Tarots used){}"
                 }
             },
-            j_matador                    = {
+            j_gstpst_crazyhamburger        = {
+                name = "Crazy Hamburger",
+                text =
+                {
+                    {
+                        "Randomises {C:attention}ranks{} and",
+                        "{C:attention}suits{} of all played",
+                        "and scored cards"
+                    },
+                    {
+                        "Gains {C:white,X:mult}X#1#{} Mult when",
+                        "playing a {C:attention}Straight{} or better",
+                        "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult){}"
+                    }
+                }
+            },
+            j_matador                      = {
                 name = "Red Matador",
                 text = {
                     "Earn {C:money}$#1#{} if played",
@@ -176,7 +193,7 @@ return {
                     "using any discards",
                 },
             },
-            j_gstpst_greenmatador        = {
+            j_gstpst_greenmatador          = {
                 name = "Green Matador",
                 text =
                 {
@@ -186,7 +203,7 @@ return {
                     "each {C:attention}Boss Blind{}"
                 }
             },
-            j_gstpst_bluematador         = {
+            j_gstpst_bluematador           = {
                 name = "Blue Matador",
                 text =
                 {
@@ -196,7 +213,7 @@ return {
                     "each {C:attention}Boss Blind{}"
                 }
             },
-            j_gstpst_bozobrain           = {
+            j_gstpst_bozobrain             = {
                 name = "Bozo Brain",
                 text =
                 {
@@ -204,7 +221,7 @@ return {
                     "hand is level {C:attention}1{}"
                 }
             },
-            j_gstpst_thelastsupper       = {
+            j_gstpst_thelastsupper         = {
                 name = "The Last Supper",
                 text =
                 {
@@ -214,7 +231,7 @@ return {
                     "{C:inactive}({C:attention}#3#:#2#{C:inactive}, #4#){}"
                 }
             },
-            j_gstpst_pipelinepunch       = {
+            j_gstpst_pipelinepunch         = {
                 name = "Pipeline Punch",
                 text =
                 {
@@ -224,7 +241,7 @@ return {
                     "to become a {C:attention}Queen{}"
                 }
             },
-            j_gstpst_intentionallyblank  = {
+            j_gstpst_intentionallyblank    = {
                 name = "Intentionally Blank",
                 text =
                 {
@@ -232,7 +249,7 @@ return {
                     "give {C:white,X:mult}X#1#{} Mult"
                 }
             },
-            j_gstpst_zirconiumpants      = {
+            j_gstpst_zirconiumpants        = {
                 name = "Zirconium Pants",
                 text =
                 {
@@ -242,7 +259,7 @@ return {
                     "in hand becomes {C:attention}Steel{}"
                 }
             },
-            j_gstpst_cadonk              = {
+            j_gstpst_cadonk                = {
                 name = "Cadonk",
                 text =
                 {
@@ -253,7 +270,7 @@ return {
                     "{C:inactive,s:0.8}a Kind / Straight Flush){}"
                 }
             },
-            j_gstpst_personmcdudeguy     = {
+            j_gstpst_personmcdudeguy       = {
                 name = "Person McDudeguy",
                 text =
                 {
@@ -263,7 +280,7 @@ return {
                     "so strong and good"
                 }
             },
-            j_gstpst_demonmcevilmonster  = {
+            j_gstpst_demonmcevilmonster    = {
                 name = "Demon McEvilmonster",
                 text =
                 {
@@ -273,7 +290,7 @@ return {
                     "{C:red}{C:white,X:mult}X#2#{C:red} Mult now grrrrrrr{}"
                 }
             },
-            j_gstpst_manface             = {
+            j_gstpst_manface               = {
                 name = "Man Face",
                 text = {
                     "When {C:attention}round{} begins,",
@@ -282,7 +299,7 @@ return {
                     "card in your hand",
                 },
             },
-            j_gstpst_splashman           = {
+            j_gstpst_splashman             = {
                 name = "Splash Man",
                 text =
                 {
@@ -296,7 +313,7 @@ return {
                     }
                 }
             },
-            j_gstpst_face                = {
+            j_gstpst_face                  = {
                 name = "Face",
                 text =
                 {
@@ -305,7 +322,7 @@ return {
                     "when scored"
                 }
             },
-            j_gstpst_boris               = {
+            j_gstpst_boris                 = {
                 name = "Boris",
                 text =
                 {
@@ -316,7 +333,7 @@ return {
                     "{C:inactive}(#2#){}"
                 }
             },
-            j_gstpst_cross               = {
+            j_gstpst_cross                 = {
                 name = "Cross",
                 text =
                 {
@@ -328,7 +345,7 @@ return {
                     "when rotated {C:attention}up{}"
                 }
             },
-            j_gstpst_signedegg           = {
+            j_gstpst_signedegg             = {
                 name = "Signed Egg",
                 text =
                 {
@@ -343,16 +360,16 @@ return {
                     }
                 }
             },
-			j_gstpst_theworldshardestjoker      = {
-				name = "The World's Hardest Joker",
-				text = {
-					"Play {C:attention}#1#{} {C:inactive}[#2#]{} consecutive",
-					"{C:attention}Straight Flushes{} to create",
-					"a copy of {C:spectral}The Soul{}",
-					"{C:inactive}(Must have room){}",
-				}
-			},
-            j_gstpst_trafficlight        = {
+            j_gstpst_theworldshardestjoker = {
+                name = "The World's Hardest Joker",
+                text = {
+                    "Play {C:attention}#1#{} {C:inactive}[#2#]{} consecutive",
+                    "{C:attention}Straight Flushes{} to create",
+                    "a copy of {C:spectral}The Soul{}",
+                    "{C:inactive}(Must have room){}",
+                }
+            },
+            j_gstpst_trafficlight          = {
                 name = "Traffic Light",
                 text =
                 {
@@ -362,7 +379,7 @@ return {
                     "hand was played"
                 }
             },
-            j_gstpst_cacklejack          = {
+            j_gstpst_cacklejack            = {
                 name = "Cacklejack",
                 text =
                 {
@@ -372,7 +389,7 @@ return {
                     "{C:inactive}(Cannot create or replace Cacklejacks){}"
                 }
             },
-            j_gstpst_bettercreditcard    = {
+            j_gstpst_bettercreditcard      = {
                 name = "Better Credit Card",
                 text = {
                     {
@@ -385,7 +402,7 @@ return {
                     },
                 },
             },
-            j_gstpst_onearmedbandit      = {
+            j_gstpst_onearmedbandit        = {
                 name = "One Armed Bandit",
                 text =
                 {
@@ -409,7 +426,7 @@ return {
                     }
                 }
             },
-            j_gstpst_wavegoodbye         = {
+            j_gstpst_wavegoodbye           = {
                 name = "Wave Goodbye",
                 text =
                 {
@@ -417,7 +434,7 @@ return {
                     "{C:attention}final{} hand of round"
                 }
             },
-            j_gstpst_tokenofappreciation = {
+            j_gstpst_tokenofappreciation   = {
                 name = "Token of Appreciation",
                 text =
                 {
@@ -430,37 +447,46 @@ return {
             c_gstpst_horsemeat = {
                 name = "Horse Meat",
                 text = {
-                    "dfkgjn"
+                    "Randomises {C:attention}ranks{} and",
+                    "{C:attention}suits{} of up to",
+                    "{C:attention}#1#{} selected cards"
                 }
             },
             c_gstpst_redhotchilipeppers = {
                 name = "Red Hot Chili Peppers",
                 text = {
-                    "dfkgjn"
+                    "Destroys up to",
+                    "{C:attention}#1#{} selected cards"
                 }
             },
             c_gstpst_grassofdeath = {
                 name = "Grass of Death",
                 text = {
-                    "dfkgjn"
+                    "Select up to {C:attention}#1#{} cards,",
+                    "convert {C:attention}all{} cards",
+                    "into the {C:attention}right{} card",
+                    "{C:inactive}(Drag to rearrange){}"
                 }
             },
             c_gstpst_oilfromiraq = {
                 name = "Oil From Iraq",
                 text = {
-                    "dfkgjn"
+                    "Enhances {C:attention}#1#{} selected",
+                    "cards to {C:attention}#2#s{}"
                 }
             },
-            c_gstpst_cheesefromsaopaolofrombrazil = {
+            c_gstpst_cheesefromsaopaulofrombrazil = {
                 name = "Cheese from São Paolo from Brazil",
                 text = {
-                    "dfkgjn"
+                    "Enhances {C:attention}#1#{} selected",
+                    "cards to {C:attention}#2#s{}"
                 }
             },
             c_gstpst_breadmadeinturkey = {
                 name = "Bread Made in Turkey",
                 text = {
-                    "dfkgjn"
+                    "Add a {C:blue}Blue Seal{} to {C:attention}#1#{}",
+                    "selected card in your hand"
                 }
             }
         },
