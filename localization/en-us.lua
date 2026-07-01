@@ -101,6 +101,38 @@ return {
                     "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult){}"
                 }
             },
+            j_gstpst_edballs               = {
+                name = "Ed Balls",
+                text =
+                {
+                    "Retrigger {C:attention}first{} played card",
+                    "used in scoring {C:attention}#1#{} additional",
+                    "time per card with {C:spades}Spades{}",
+                    "suit held in hand"
+                }
+            },
+            j_gstpst_guystanding           = {
+                name = "Guy Standing (Sitting)",
+                text =
+                {
+                    "{C:attention}Stands{} after playing",
+                    "{C:attention}#1#{} {C:inactive}[#2#]{} hands"
+                }
+            },
+            j_gstpst_guystanding_standing = {
+                name = "Guy Standing (Standing)",
+                text =
+                {
+                    {
+                        "Earn {C:money}$#3#{} when a",
+                        "consumable is {C:money}sold{}"
+                    },
+                    {
+                        "{C:attention}Sits{} when {C:attention}Blind{}",
+                        "is selected"
+                    }
+                }
+            },
             j_gstpst_fashionismypassion    = {
                 name = "Fashion is my Passion",
                 text =
@@ -502,7 +534,7 @@ return {
             }
         },
         Other = {
-            gstpst_man = {
+            gstpst_man                    = {
                 name = "Man",
                 text = {
                     "Cannot be",

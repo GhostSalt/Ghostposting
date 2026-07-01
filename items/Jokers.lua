@@ -97,7 +97,7 @@ if not next(SMODS.find_mod("ColdBeans")) then --Markiplier
   })
 end
 
-do --Tom Scott
+do --Tom Scott, Ed Balls, Guy Standing
   SMODS.Atlas {
     key = "Xnopyt",
     path = "GhostpostingXnopyt.png",
@@ -193,6 +193,132 @@ do --Tom Scott
           end
         end
       end
+    end
+  })
+
+  SMODS.Sound({
+    key = "edballs",
+    path = "gstpst_edballs.ogg",
+  })
+
+  SMODS.Joker({
+    key = "edballs",
+    config = { extra = { retriggers = 1, sound_played = false } },
+    rarity = 3,
+    atlas = "Jokers1",
+    pos = { x = 3, y = 9 },
+    cost = 8,
+    loc_vars = function(self, info_queue, card)
+      return { vars = { card.ability.extra.retriggers } }
+    end,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pronouns = "he_him",
+
+    calculate = function(self, card, context)
+      if context.repetition and context.cardarea == G.play and context.other_card == context.scoring_hand[1] then
+        local spades = 0
+        for _, v in ipairs(G.hand.cards) do
+          if v:is_suit("Spades") then spades = spades + 1 end
+        end
+
+        if spades > 0 then
+          if not card.ability.extra.sound_played then
+            card.ability.extra.sound_played = true
+
+            G.E_MANAGER:add_event(Event({
+              func = function()
+                play_sound("gstpst_edballs")
+                return true
+              end
+            }))
+          end
+          return { repetitions = spades * card.ability.extra.retriggers }
+        end
+      end
+    end
+  })
+
+  SMODS.Sound({
+    key = "guystanding",
+    path = "gstpst_guystanding.ogg",
+  })
+
+  SMODS.Joker({
+    key = "guystanding",
+    config = { extra = { target_hands = 3, current_hands = 0, money = 5, is_standing = false } },
+    rarity = 2,
+    atlas = "Jokers1",
+    pos = { x = 4, y = 9 },
+    flipbook_anim_states = {
+      sitting = {
+        anim = { { x = 4, y = 9, t = 1 } },
+        loop = false
+      },
+      standing = {
+        anim = { { x = 5, y = 9, t = 1 } },
+        loop = false
+      }
+    },
+    flipbook_anim_initial_state = "sitting",
+    cost = 6,
+    loc_vars = function(self, info_queue, card)
+      local key = "j_gstpst_guystanding"
+      gstpst_guystanding_status = gstpst_guystanding_status or card.ability.extra.is_standing
+      if not gstpst_guystanding_status ~= not card.fake_card then key = key .. "_standing" end
+
+      if not card.fake_card then
+        gstpst_guystanding_status = card.ability.extra.is_standing
+        info_queue[#info_queue + 1] = G.P_CENTERS.j_gstpst_guystanding
+      else
+        gstpst_guystanding_status = nil
+      end
+
+      return { key = key, vars = { card.ability.extra.target_hands, card.ability.extra.target_hands - card.ability.extra.current_hands, card.ability.extra.money } }
+    end,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pronouns = "he_him",
+
+    calculate = function(self, card, context)
+      if not card.ability.extra.is_standing and context.before and not context.blueprint then
+        card.ability.extra.current_hands = card.ability.extra.current_hands + 1
+
+        if card.ability.extra.current_hands >= card.ability.extra.target_hands then
+          card.ability.extra.is_standing = true
+          card.ability.extra.current_hands = 0
+          local stand = function(params)
+            local _card = params.card
+            _card:flipbook_set_anim_state("standing")
+            if not _card.ability.extra.sound_played then
+              _card.ability.extra.sound_played = true
+              play_sound("gstpst_guystanding")
+            end
+          end
+
+          gstpst_flip_card_and_do(card, stand, { card = card })
+        else
+          return { message = card.ability.extra.current_hands .. "/" .. card.ability.extra.target_hands }
+        end
+      end
+
+      if card.ability.extra.is_standing and context.selling_card and context.card.config.center.set ~= "Joker" then
+        return { dollars = card.ability.extra.money }
+      end
+
+      if card.ability.extra.is_standing and context.setting_blind and not context.blueprint then
+        card.ability.extra.is_standing = false
+        local sit = function(params)
+          params.card:flipbook_set_anim_state("sitting")
+        end
+
+        gstpst_flip_card_and_do(card, sit, { card = card })
+      end
+    end,
+    add_to_deck = function(self, card, from_debuff)
+      card:flipbook_set_anim_state(card.ability.extra.is_standing and "standing" or "sitting")
     end
   })
 end
@@ -434,7 +560,7 @@ if not next(SMODS.find_mod("ColdBeans")) then --Fashion is my Passion, President
   })
 end
 
-do --Joker Kitchen
+do --Joker Kitchen / Crazy Hamburger
   SMODS.Atlas {
     key = "JokerKitchen",
     path = "GhostpostingJokerKitchen.png",
@@ -566,7 +692,7 @@ do --Joker Kitchen
     pronouns = "he_him",
 
     calculate = function(self, card, context)
-      if context.using_consumeable then
+      if context.using_consumeable and not context.blueprint then
         local key
         if context.consumeable.config.center.key == "c_gstpst_horsemeat" then
           key = "horsemeat"
@@ -591,39 +717,15 @@ do --Joker Kitchen
           count = count + 1
         end
         if count >= 6 then
-          G.E_MANAGER:add_event(Event({
-            func = function()
-              G.E_MANAGER:add_event(Event({
-                trigger = "before",
-                delay = 0.4,
-                func = function()
-                  card:flip(); play_sound("card1", 1); card:juice_up(0.3, 0.3); return true
-                end
-              }))
-              delay(0.2)
-              G.E_MANAGER:add_event(Event({
-                trigger = "before",
-                delay = 0.2,
-                func = function()
-                  card:set_ability("j_gstpst_crazyhamburger")
-                  card.flipbook_anim_t = 0
-                  card.flipbook_anim = format_flipbook_anim(card.config.center.flipbook_anim)
-                  play_sound("gstpst_crazyhamburger-0" .. math.random(7), 1, 0.8)
-                  return true
-                end
-              }))
-              G.E_MANAGER:add_event(Event({
-                trigger = "before",
-                delay = 0.1,
-                func = function()
-                  card:flip()
-                  play_sound("tarot2", 1, 0.6)
-                  return true
-                end
-              }))
-              return true
-            end
-          }))
+          local become_crazy = function(params)
+            local card = params.card
+            card:set_ability("j_gstpst_crazyhamburger")
+            card.flipbook_anim_t = 0
+            card.flipbook_anim = format_flipbook_anim(card.config.center.flipbook_anim)
+            play_sound("gstpst_crazyhamburger-0" .. math.random(7), 1, 0.8)
+          end
+
+          gstpst_flip_card_and_do(card, become_crazy, { card = card })
         else
           G.E_MANAGER:add_event(Event({
             func = function()
@@ -634,9 +736,6 @@ do --Joker Kitchen
           }))
         end
       end
-    end,
-    set_ability = function(self, card, initial, delay_sprites)
-      card.ability.extra.used_so_far = {}
     end,
     add_to_deck = function(self, card, from_debuff)
       play_sound("gstpst_jokerkitchen_intro", 1, 0.8)
@@ -667,7 +766,7 @@ do --Joker Kitchen
         return { xmult = card.ability.extra.current_xmult }
       end
 
-      if context.before and (context.scoring_name == "Straight" or G.GAME.hands[context.scoring_name].order < G.GAME.hands["Straight"].order) then
+      if context.before and not context.blueprint and (context.scoring_name == "Straight" or G.GAME.hands[context.scoring_name].order < G.GAME.hands["Straight"].order) then
         card.ability.extra.current_xmult = card.ability.extra.current_xmult + card.ability.extra.added_xmult
         return { message = localize("k_upgrade_ex") }
       end
