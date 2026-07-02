@@ -197,6 +197,87 @@ do --Tom Scott, Ed Balls, Guy Standing, Crispiest Fries, Exploding Watermelon
   })
 
   SMODS.Sound({
+    key = "gordonramsay_waterphone",
+    path = "gstpst_gordonramsay_waterphone.ogg"
+  })
+
+  for i = 1, 7 do
+    SMODS.Sound({
+      key = "gordonramsay_getout-0" .. i,
+      path = "gstpst_gordonramsay_getout-0" .. i .. ".ogg"
+    })
+  end
+
+  SMODS.Joker({
+    key = "gordonramsay",
+    config = { extra = { xmult = 2, money = 5, requirement = 4, stage = 0 } },
+    rarity = 3,
+    atlas = "Jokers1",
+    pos = { x = 7, y = 9 },
+    flipbook_anim_states = {
+      stage_0 = { anim = { { x = 7, y = 9, t = 1 } }, loop = false },
+      stage_1 = { anim = { { x = 8, y = 9, t = 1 } }, loop = false },
+      stage_2 = { anim = { { x = 9, y = 9, t = 1 } }, loop = false },
+      stage_3 = { anim = { { x = 10, y = 9, t = 1 } }, loop = false }
+    },
+    flipbook_anim_initial_state = "stage_0",
+    cost = 8,
+    loc_vars = function(self, info_queue, card)
+      return { vars = { card.ability.extra.xmult, card.ability.extra.money, card.ability.extra.requirement } }
+    end,
+    blueprint_compat = true,
+    eternal_compat = false,
+    perishable_compat = true,
+    pronouns = "he_him",
+
+    calculate = function(self, card, context)
+      if context.joker_main and card.ability.extra.stage < 3 then
+        return { xmult = card.ability.extra.xmult }
+      end
+
+      if context.before and #context.scoring_hand < card.ability.extra.requirement then
+        card.ability.extra.stage = card.ability.extra.stage + 1
+
+        local durations = { 4, 3.5, 1.5, 2.5, 8, 4.5, 4.5 }
+        local sound = math.random(7)
+        local stored_music_vol = G.SETTINGS.SOUND.music_volume
+        G.E_MANAGER:add_event(Event({
+          trigger = "before",
+          delay = card.ability.extra.stage < 3 and 4 or durations[sound],
+          timer = "REAL",
+          func = function()
+            if card.ability.extra.stage < 3 then
+              play_sound("gstpst_gordonramsay_waterphone", 1, 0.8)
+              G.SETTINGS.SOUND.music_volume = 0
+              card:flipbook_set_anim_state("stage_" .. card.ability.extra.stage)
+            else
+              play_sound("gstpst_gordonramsay_getout-0" .. sound)
+              card:flipbook_set_anim_state("stage_3")
+            end
+            return true
+          end
+        }))
+        if card.ability.extra.stage >= 3 then
+          SMODS.destroy_cards({ card })
+        else
+          G.E_MANAGER:add_event(Event({
+            func = function()
+              G.SETTINGS.SOUND.music_volume = stored_music_vol
+              return true
+            end
+          }))
+        end
+      end
+    end,
+    calc_dollar_bonus = function(self, card)
+      return card.ability.extra.money
+    end,
+    add_to_deck = function(self, card, from_debuff)
+      card:flipbook_set_anim_state("stage_" .. card.ability.extra.stage)
+    end
+  })
+
+  SMODS.Sound({
     key = "edballs",
     path = "gstpst_edballs.ogg",
   })
@@ -324,7 +405,7 @@ do --Tom Scott, Ed Balls, Guy Standing, Crispiest Fries, Exploding Watermelon
 
   SMODS.Joker({
     key = "crispiestfries",
-    config = { extra = { mult = 15, count = 0 } },
+    config = { extra = { mult = 12, count = 0 } },
     rarity = 1,
     atlas = "Jokers1",
     pos = { x = 6, y = 9 },
@@ -435,7 +516,7 @@ do --Tom Scott, Ed Balls, Guy Standing, Crispiest Fries, Exploding Watermelon
       end
     end,
     add_to_deck = function(self, card, from_debuff)
-      card.ability.extra.target = 120 + (pseudorandom("gstpst_explodingwatermelon") * 120)
+      card.ability.extra.target = 180 + (pseudorandom("gstpst_explodingwatermelon") * 120)
     end
   })
 
@@ -461,7 +542,7 @@ do --Tom Scott, Ed Balls, Guy Standing, Crispiest Fries, Exploding Watermelon
   end
 end
 
-if not next(SMODS.find_mod("ColdBeans")) then --Fashion is my Passion, President Hathaway, Chuck McGill, Charles, Miracle Machine
+if not next(SMODS.find_mod("ColdBeans")) then --Fashion is my Passion
   SMODS.Joker({
     key = "fashionismypassion",
     config = { extra = { chips = 50 } },
@@ -483,7 +564,196 @@ if not next(SMODS.find_mod("ColdBeans")) then --Fashion is my Passion, President
       end
     end
   })
+end
 
+do --Postal Dude
+  SMODS.Sound({
+    key = "postaldude_1a",
+    path = "gstpst_postaldude_1a.ogg"
+  })
+  SMODS.Sound({
+    key = "postaldude_1b",
+    path = "gstpst_postaldude_1b.ogg"
+  })
+  SMODS.Sound({
+    key = "postaldude_2a",
+    path = "gstpst_postaldude_2a.ogg"
+  })
+  SMODS.Sound({
+    key = "postaldude_2b",
+    path = "gstpst_postaldude_2b.ogg"
+  })
+  SMODS.Sound({
+    key = "postaldude_3a",
+    path = "gstpst_postaldude_3a.ogg"
+  })
+  SMODS.Sound({
+    key = "postaldude_3b",
+    path = "gstpst_postaldude_3b.ogg"
+  })
+
+
+  SMODS.Sound({
+    key = "postaldude_ohno1",
+    path = "gstpst_postaldude_ohno1.ogg"
+  })
+  SMODS.Sound({
+    key = "postaldude_ohno2",
+    path = "gstpst_postaldude_ohno2.ogg"
+  })
+
+  SMODS.Sound({
+    key = "postaldude_thanks",
+    path = "gstpst_postaldude_thanks.ogg"
+  })
+
+  SMODS.Sound({
+    key = "postaldude_add",
+    path = "gstpst_postaldude_add.ogg"
+  })
+
+  for i = 1, 4 do
+    SMODS.Sound({
+      key = "postaldude_sell" .. i,
+      path = "gstpst_postaldude_sell" .. i .. ".ogg"
+    })
+  end
+
+  SMODS.Joker({
+    key = "postaldude",
+    config = { extra = { odds = 6, added_commons = 1, no_of_signatures = 0, max_commons = 5, next_sound = "1" } },
+    rarity = 3,
+    atlas = "Jokers1",
+    pos = { x = 11, y = 9 },
+    cost = 8,
+    loc_vars = function(self, info_queue, card)
+      info_queue[#info_queue + 1] = G.P_CENTERS.e_negative
+      local num, denom = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "gstpst_postaldude")
+      return { vars = { num, denom, card.ability.extra.added_commons, card.ability.extra.no_of_signatures, card.ability.extra.max_commons } }
+    end,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pronouns = "he_him",
+
+    calculate = function(self, card, context)
+      if context.buying_card and context.card.config.center.set == "Joker" and context.card ~= card and not card.getting_sliced
+          and not context.blueprint and card.ability.extra.no_of_signatures < card.ability.extra.max_commons then
+        local signed = SMODS.pseudorandom_probability(card, "gstpst_postaldude", 1, card.ability.extra.odds)
+        local durations = {
+          ["1a"] = 2.3,
+          ["1b"] = 1.7,
+          ["2a"] = 1.6,
+          ["2b"] = 3.2,
+          ["3a"] = 3,
+          ["3b"] = 3.2
+        }
+
+        local sound = card.ability.extra.next_sound .. ((math.random() < 0.5) and "a" or "b")
+        local duration = durations[sound]
+        local interval = 0.3
+        G.E_MANAGER:add_event(Event({
+          func = function()
+            play_sound("gstpst_postaldude_" .. sound, 1, 0.8)
+            return true
+          end
+        }))
+        for i = 1, math.floor(duration / interval) do
+          G.E_MANAGER:add_event(Event({
+            trigger = "before",
+            timer = "REAL",
+            delay = interval,
+            func = function()
+              card:juice_up()
+              return true
+            end
+          }))
+        end
+        G.E_MANAGER:add_event(Event({
+          trigger = "before",
+          timer = "REAL",
+          delay = (duration % interval) + 1,
+          func = function()
+            return true
+          end
+        }))
+        local voice_pitch = 0.9 + (math.random() * 0.4)
+        local voice_times = 7 + math.random(3)
+        local voice_types = {}
+        for i = 1, voice_times do
+          voice_types[#voice_types + 1] = math.random(1, 11)
+          while voice_types[#voice_types] == voice_types[#voice_types - 1] do
+            voice_types[#voice_types] = math.random(1, 11)
+          end
+        end
+
+        for i = 1, voice_times do
+          G.E_MANAGER:add_event(Event({
+            trigger = "after",
+            timer = "REAL",
+            delay = 0.13,
+            func = function()
+              context.card:juice_up()
+              play_sound("voice" .. voice_types[i], voice_pitch, 0.5)
+              return true
+            end
+          }))
+        end
+        G.E_MANAGER:add_event(Event({
+          trigger = "after",
+          timer = "REAL",
+          delay = 0.2,
+          func = function()
+            if signed then
+              card.ability.extra.next_sound = "1"
+              card.ability.extra.no_of_signatures = card.ability.extra.no_of_signatures + card.ability.extra.added_commons
+              if card.ability.extra.no_of_signatures > card.ability.extra.max_commons then card.ability.extra.no_of_signatures = card.ability.extra.max_commons end
+              play_sound("gstpst_postaldude_thanks", 1, 0.8)
+            else
+              local next_options = { ["1"] = "2", ["2"] = "3", ["3"] = "3" }
+              card.ability.extra.next_sound = next_options[card.ability.extra.next_sound]
+              play_sound("gstpst_postaldude_ohno" .. math.random(2), 1, 0.8)
+            end
+            return true
+          end
+        }))
+      end
+
+      if context.setting_blind and not context.blueprint then
+        card.ability.extra.next_sound = "1"
+      end
+
+      if context.selling_self then
+        if not context.blueprint then
+          play_sound("gstpst_postaldude_sell" .. math.random(4), 1, 0.8)
+        end
+
+
+        G.E_MANAGER:add_event(Event({
+          func = function()
+            play_sound("timpani")
+            for i = 1, card.ability.extra.no_of_signatures do
+              SMODS.add_card {
+                set = "Joker",
+                rarity = "Common",
+                edition = "e_negative",
+                key_append = "gstpst_postaldude"
+              }
+            end
+            return true
+          end
+        }))
+      end
+    end,
+    add_to_deck = function(self, card, from_debuff)
+      if not from_debuff then
+        play_sound("gstpst_postaldude_add", 1, 0.8)
+      end
+    end
+  })
+end
+
+if not next(SMODS.find_mod("ColdBeans")) then --President Hathaway, Chuck McGill, Charles, Miracle Machine
   SMODS.Joker({
     key = "presidenthathaway",
     config = { extra = { xmult = 2 } },
@@ -2111,7 +2381,48 @@ if not next(SMODS.find_mod("ColdBeans")) then --Traffic Light, Cacklejack, Bette
       end
     end,
   })
+end
 
+
+do --Faceless Zany Joker
+  SMODS.Joker({
+    key = "facelesszanyjoker",
+    config = { extra = { money = 5 } },
+    loc_vars = function(self, info_queue, card)
+      return { vars = { card.ability.extra.money } }
+    end,
+    rarity = 1,
+    atlas = "Jokers1",
+    pos = { x = 0, y = 10 },
+    cost = 5,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pronouns = "any_all",
+
+    calculate = function(self, card, context)
+      if context.discard and context.other_card == context.full_hand[#context.full_hand] then
+        if next(get_X_same(3, context.full_hand)) then
+          G.GAME.dollar_buffer = (G.GAME.dollar_buffer or 0) + card.ability.extra.money
+          return {
+            dollars = card.ability.extra.money,
+            delay = 0.45,
+            func = function()
+              G.E_MANAGER:add_event(Event({
+                func = function()
+                  G.GAME.dollar_buffer = 0
+                  return true
+                end
+              }))
+            end
+          }
+        end
+      end
+    end
+  })
+end
+
+if next(SMODS.find_mod("ColdBeans")) then --Better Credit Card
   SMODS.Joker({
     key = "bettercreditcard",
     config = { extra = { bankrupt_at = 20 } },

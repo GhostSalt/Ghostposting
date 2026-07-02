@@ -101,6 +101,23 @@ return {
                     "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult){}"
                 }
             },
+            j_gstpst_gordonramsay          = {
+                name = "Gordon Ramsay",
+                text =
+                {
+                    {
+                        "{C:white,X:mult}X#1#{} Mult, earn {C:money}$#2#{}",
+                        "at end of round"
+                    },
+                    {
+                        "Playing a hand with fewer",
+                        "than {C:attention}#3#{} scoring cards will make",
+                        "{C:attention}Gordon{} {C:red}angry{}, if he gets too",
+                        "angry he will shut down",
+                        "your restaurant and {C:red,E:2}leave{}"
+                    }
+                }
+            },
             j_gstpst_edballs               = {
                 name = "Ed Balls",
                 text =
@@ -119,7 +136,7 @@ return {
                     "{C:attention}#1#{} {C:inactive}[#2#]{} hands"
                 }
             },
-            j_gstpst_guystanding_standing = {
+            j_gstpst_guystanding_standing  = {
                 name = "Guy Standing (Standing)",
                 text =
                 {
@@ -133,7 +150,7 @@ return {
                     }
                 }
             },
-            j_gstpst_crispiestfries           = {
+            j_gstpst_crispiestfries        = {
                 name = "Crispiest Fries",
                 text =
                 {
@@ -142,7 +159,7 @@ return {
                     "some real-world time"
                 }
             },
-            j_gstpst_explodingwatermelon           = {
+            j_gstpst_explodingwatermelon   = {
                 name = "Exploding Watermelon",
                 text =
                 {
@@ -158,6 +175,23 @@ return {
                     "Played cards with {C:hearts}Hearts{} suit",
                     "give {C:chips}+#1#{} Chips when scored",
                 }
+            },
+            j_gstpst_postaldude     = {
+                name = "Postal Dude",
+                text = {
+                    {
+                        "Purchased {C:attention}Jokers{} each have",
+                        "a {C:green}#1# in #2#{} chance to sign",
+                        "this {C:attention}Joker's petition{}",
+                        "{C:inactive}(Maximum {C:attention}#5#{C:inactive} signatures){}"
+                    },
+                    {
+                        "When this {C:attention}Joker{} is {C:money}sold{},",
+                        "creates {C:attention}#3#{} {C:dark_edition}Negative{} {C:blue}Common{}",
+                        "{C:attention}Joker{} for each {C:attention}signature{}",
+                        "{C:inactive}(Currently {C:attention}#4#{C:inactive} signatures){}"
+                    },
+                },
             },
             j_gstpst_presidenthathaway     = {
                 name = "President Hathaway",
@@ -439,6 +473,13 @@ return {
                     "{C:inactive}(Cannot create or replace Cacklejacks){}"
                 }
             },
+            j_gstpst_facelesszanyjoker      = {
+                name = "Faceless Zany Joker",
+                text = {
+                    "Earn {C:money}$#1#{} if {C:red}discarded{} cards",
+                    "contain a {C:attention}3 of a Kind{}"
+                },
+            },
             j_gstpst_bettercreditcard      = {
                 name = "Better Credit Card",
                 text = {
@@ -552,7 +593,7 @@ return {
             }
         },
         Other = {
-            gstpst_man                    = {
+            gstpst_man = {
                 name = "Man",
                 text = {
                     "Cannot be",
