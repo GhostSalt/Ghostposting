@@ -97,7 +97,7 @@ if not next(SMODS.find_mod("ColdBeans")) then --Markiplier
   })
 end
 
-do --Tom Scott, Ed Balls, Guy Standing
+do --Tom Scott, Ed Balls, Guy Standing, Crispiest Fries, Exploding Watermelon
   SMODS.Atlas {
     key = "Xnopyt",
     path = "GhostpostingXnopyt.png",
@@ -321,6 +321,144 @@ do --Tom Scott, Ed Balls, Guy Standing
       card:flipbook_set_anim_state(card.ability.extra.is_standing and "standing" or "sitting")
     end
   })
+
+  SMODS.Joker({
+    key = "crispiestfries",
+    config = { extra = { mult = 15, count = 0 } },
+    rarity = 1,
+    atlas = "Jokers1",
+    pos = { x = 6, y = 9 },
+    draw = function(self, card, layer)
+      if self.discovered or card.params.bypass_discovery_center then
+        if card.ability.extra.active == false then
+          card.children.center:draw_shader("debuff", nil, card.ARGS.send_to_shader)
+        end
+      end
+    end,
+    cost = 5,
+    loc_vars = function(self, info_queue, card)
+      return { vars = { card.ability.extra.mult } }
+    end,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pronouns = "they_them",
+
+    calculate = function(self, card, context)
+      if context.joker_main and card.ability.extra.active then
+        return { mult = card.ability.extra.mult }
+      end
+
+      if context.gstpst_crispiestfries and context.gstpst_crispiestfries == card and not card.ability.extra.dont_poll then
+        card.ability.extra.dont_poll = true
+        G.E_MANAGER:add_event(Event({
+          func = function()
+            card.ability.extra.active = true
+            return true
+          end
+        }))
+        return { message = localize("k_active_ex") }
+      end
+    end,
+    add_to_deck = function(self, card, from_debuff)
+      card.ability.extra.target = 60 + (pseudorandom("gstpst_crispiestfries") * 120)
+      card.ability.extra.active = false
+    end
+  })
+
+  SMODS.Atlas {
+    key = "BrandonFarris",
+    path = "GhostpostingBrandonFarris.png",
+    px = 71,
+    py = 95
+  }
+
+  SMODS.Sound({
+    key = "explodingwatermelon",
+    path = "gstpst_explodingwatermelon.ogg",
+  })
+
+  SMODS.Joker({
+    key = "explodingwatermelon",
+    config = { extra = { xmult = 2, count = 0, destroyed = false } },
+    rarity = 1,
+    atlas = "BrandonFarris",
+    pos = { x = 4, y = 9 },
+    flipbook_anim_states = {
+      passive = {
+        anim = { { x = 0, y = 0, t = 1 } },
+        loop = false
+      },
+      exploding = {
+        anim = {
+          { xrange = { first = 1, last = 8 }, y = 0,                            t = 0.1 },
+          { xrange = { first = 0, last = 8 }, yrange = { first = 1, last = 3 }, t = 0.1 },
+          { xrange = { first = 0, last = 7 }, y = 4,                            t = 0.1 },
+          { x = 7,                            y = 4,                            t = 1 }
+        },
+        loop = false
+      }
+    },
+    flipbook_anim_initial_state = "passive",
+    cost = 5,
+    loc_vars = function(self, info_queue, card)
+      return { vars = { card.ability.extra.xmult } }
+    end,
+    blueprint_compat = true,
+    eternal_compat = false,
+    perishable_compat = true,
+    pronouns = "it_its",
+
+    calculate = function(self, card, context)
+      if context.joker_main then
+        return { xmult = card.ability.extra.xmult }
+      end
+
+      if context.gstpst_explodedwatermelon and context.gstpst_explodedwatermelon == card and not card.ability.extra.destroyed then
+        card.ability.extra.destroyed = true
+        G.E_MANAGER:add_event(Event({
+          trigger = "before",
+          delay = 4.3,
+          timer = "REAL",
+          func = function()
+            play_sound("gstpst_explodingwatermelon", 1, 0.7)
+            card:flipbook_set_anim_state("exploding")
+            return true
+          end
+        }))
+        G.E_MANAGER:add_event(Event({
+          func = function()
+            SMODS.destroy_cards({ card })
+            return true
+          end
+        }))
+      end
+    end,
+    add_to_deck = function(self, card, from_debuff)
+      card.ability.extra.target = 120 + (pseudorandom("gstpst_explodingwatermelon") * 120)
+    end
+  })
+
+  local explodingwatermelon_update_ref = Game.update
+  function Game:update(dt)
+    if not G.SETTINGS.paused then
+      for _, v in ipairs(SMODS.find_card("j_gstpst_explodingwatermelon")) do
+        v.ability.extra.count = v.ability.extra.count + dt
+        if v.ability.extra.count >= v.ability.extra.target and not v.ability.extra.destroyed then
+          SMODS.calculate_context({ gstpst_explodedwatermelon = v })
+        end
+      end
+
+      for _, v in ipairs(SMODS.find_card("j_gstpst_crispiestfries")) do
+        v.ability.extra.count = v.ability.extra.count + dt
+        if v.ability.extra.count >= v.ability.extra.target and not v.ability.extra.dontpoll then
+          SMODS.calculate_context({ gstpst_crispiestfries = v })
+        end
+      end
+    end
+
+    return explodingwatermelon_update_ref(self, dt)
+  end
 end
 
 if not next(SMODS.find_mod("ColdBeans")) then --Fashion is my Passion, President Hathaway, Chuck McGill, Charles, Miracle Machine

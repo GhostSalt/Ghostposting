@@ -133,6 +133,24 @@ return {
                     }
                 }
             },
+            j_gstpst_crispiestfries           = {
+                name = "Crispiest Fries",
+                text =
+                {
+                    "{C:mult}+#1#{} Mult",
+                    "{C:red}Inactive{} until after",
+                    "some real-world time"
+                }
+            },
+            j_gstpst_explodingwatermelon           = {
+                name = "Exploding Watermelon",
+                text =
+                {
+                    "{C:white,X:mult}X#1#{} Mult",
+                    "{C:red,E:2}Self destructs{} after",
+                    "some real-world time"
+                }
+            },
             j_gstpst_fashionismypassion    = {
                 name = "Fashion is my Passion",
                 text =
