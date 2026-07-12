@@ -176,7 +176,7 @@ return {
                     "give {C:chips}+#1#{} Chips when scored",
                 }
             },
-            j_gstpst_postaldude     = {
+            j_gstpst_postaldude            = {
                 name = "Postal Dude",
                 text = {
                     {
@@ -417,6 +417,191 @@ return {
                     "{C:inactive}(#2#){}"
                 }
             },
+            j_gstpst_jimbo                 = {
+                name = "Jimbo",
+                text =
+                {
+                    "Has {C:attention}2{} random {C:green}positive{}",
+                    "abilities and {C:attention}1{} random",
+                    "{C:red}negative{} ability"
+                }
+            },
+            j_gstpst_jimbo_good1           = {
+                name = "Jimbo",
+                text =
+                {
+                    "{C:attention}+#1#{} hand size"
+                }
+            },
+            j_gstpst_jimbo_good2           = {
+                name = "Jimbo",
+                text =
+                {
+                    "{C:blue}+#1#{} hand per round"
+                }
+            },
+            j_gstpst_jimbo_good3           = {
+                name = "Jimbo",
+                text =
+                {
+                    "{C:red}+#1#{} discard per round"
+                }
+            },
+            j_gstpst_jimbo_good4           = {
+                name = "Jimbo",
+                text =
+                {
+                    "Earn {C:money}$#1#{} at",
+                    "end of round"
+                }
+            },
+            j_gstpst_jimbo_good5           = {
+                name = "Jimbo",
+                text =
+                {
+                    "{C:mult}+#1#{} Mult"
+                }
+            },
+            j_gstpst_jimbo_good6           = {
+                name = "Jimbo",
+                text =
+                {
+                    "{C:white,X:mult}X#1#{} Mult"
+                }
+            },
+            j_gstpst_jimbo_good7           = {
+                name = "Jimbo",
+                text =
+                {
+                    "{C:chips}+#1#{} Chips"
+                }
+            },
+            j_gstpst_jimbo_good8           = {
+                name = "Jimbo",
+                text =
+                {
+                    "Earn {C:money}$#1#{} for each",
+                    "discarded card with",
+                    "{V:1}#2#{} suit"
+                }
+            },
+            j_gstpst_jimbo_good9           = {
+                name = "Jimbo",
+                text =
+                {
+                    "Prevents Death if chips",
+                    "scored are at least",
+                    "{C:attention}25%{} of required chips",
+                    "{S:1.1,C:red,E:2}self destructs{}"
+                }
+            },
+            j_gstpst_jimbo_good10          = {
+                name = "Jimbo",
+                text =
+                {
+                    "Doubles all {C:attention}listed{}",
+                    "{C:green,E:1,S:1.1}probabilities{S:1.1} except",
+                    "any on this card",
+                    "{C:inactive}(ex: {C:green}1 in 3{C:inactive} -> {C:green}2 in 3{C:inactive}){}"
+                }
+            },
+            j_gstpst_jimbo_good11          = {
+                name = "Jimbo",
+                text =
+                {
+                    "Becomes {C:dark_edition}Negative{}",
+                    "when obtained"
+                }
+            },
+            j_gstpst_jimbo_good12          = {
+                name = "Jimbo",
+                text =
+                {
+                    "{C:attention}#1#{} free {C:green}Reroll{}",
+                    "per shop"
+                }
+            },
+            j_gstpst_jimbo_good13          = {
+                name = "Jimbo",
+                text =
+                {
+                    "Earn an extra {C:money}$#1#{} of",
+                    "{C:attention}interest{} for every {C:money}$5{} you",
+                    "have at end of round"
+                }
+            },
+            j_gstpst_jimbo_good14          = {
+                name = "Jimbo",
+                text =
+                {
+                    "Retriggers all played and",
+                    "scored cards if fewer",
+                    "than {C:attention}#1#{} cards were played"
+                }
+            },
+            j_gstpst_jimbo_bad1            = {
+                name = "Jimbo",
+                text =
+                {
+                    "{C:attention}-#1#{} hand size"
+                }
+            },
+            j_gstpst_jimbo_bad2            = {
+                name = "Jimbo",
+                text =
+                {
+                    "{C:blue}-#1#{} hand per round"
+                }
+            },
+            j_gstpst_jimbo_bad3            = {
+                name = "Jimbo",
+                text =
+                {
+                    "{C:red}-#1#{} discard per round"
+                }
+            },
+            j_gstpst_jimbo_bad4            = {
+                name = "Jimbo",
+                text =
+                {
+                    "{S:1.1,C:red,E:2}Self destructs{} after",
+                    "{C:attention}#1#{} {C:inactive}[#2#]{} rounds"
+                }
+            },
+            j_gstpst_jimbo_bad5            = {
+                name = "Jimbo",
+                text =
+                {
+                    "Lose {C:money}$#1#{} at",
+                    "end of round"
+                }
+            },
+            j_gstpst_jimbo_bad6            = {
+                name = "Jimbo",
+                text =
+                {
+                    "This {C:attention}Joker's{} abilities",
+                    "each have a {C:green}#1# in #2#{}",
+                    "chance to {C:red}fail{}"
+                }
+            },
+            j_gstpst_jimbo_bad7            = {
+                name = "Jimbo",
+                text =
+                {
+                    "Leftmost {C:attention}played card{}",
+                    "always scores, all",
+                    "others {C:red}never{} score"
+                }
+            },
+            j_gstpst_jimbo_bad8            = {
+                name = "Jimbo",
+                text =
+                {
+                    "Rightmost Joker",
+                    "gives {C:white,X:mult}X#1#{} Mult"
+                }
+            },
             j_gstpst_cross                 = {
                 name = "Cross",
                 text =
@@ -473,7 +658,7 @@ return {
                     "{C:inactive}(Cannot create or replace Cacklejacks){}"
                 }
             },
-            j_gstpst_facelesszanyjoker      = {
+            j_gstpst_facelesszanyjoker     = {
                 name = "Faceless Zany Joker",
                 text = {
                     "Earn {C:money}$#1#{} if {C:red}discarded{} cards",
@@ -614,8 +799,11 @@ return {
             ph_gstpst_charles           = "Saved by Charles",
             k_gstpst_replaced_ex        = "Replaced!",
             k_plus_soul                 = "+The Soul",
+            k_gstpst_signed_ex          = "Signed!",
+            ph_gstpst_jimbo             = "Saved by Jimbo",
 
-            gstpst_disable_custom_music = "Disable custom music"
+            gstpst_disable_custom_music = "Disable custom music",
+            gstpst_family_friendly      = "Family friendly mode"
         },
         labels = {
             gstpst_man = "Man"

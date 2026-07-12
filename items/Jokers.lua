@@ -243,7 +243,7 @@ do --Tom Scott, Ed Balls, Guy Standing, Crispiest Fries, Exploding Watermelon
         local stored_music_vol = G.SETTINGS.SOUND.music_volume
         G.E_MANAGER:add_event(Event({
           trigger = "before",
-          delay = card.ability.extra.stage < 3 and 4 or durations[sound],
+          delay = ((card.ability.extra.stage < 3) or Ghostposting.config.family_friendly) and 4 or durations[sound],
           timer = "REAL",
           func = function()
             if card.ability.extra.stage < 3 then
@@ -251,7 +251,11 @@ do --Tom Scott, Ed Balls, Guy Standing, Crispiest Fries, Exploding Watermelon
               G.SETTINGS.SOUND.music_volume = 0
               card:flipbook_set_anim_state("stage_" .. card.ability.extra.stage)
             else
-              play_sound("gstpst_gordonramsay_getout-0" .. sound)
+              if not Ghostposting.config.family_friendly then
+                play_sound("gstpst_gordonramsay_getout-0" .. sound)
+              else
+                play_sound("gstpst_gordonramsay_waterphone", 1, 0.8)
+              end
               card:flipbook_set_anim_state("stage_3")
             end
             return true
@@ -639,84 +643,92 @@ do --Postal Dude
     calculate = function(self, card, context)
       if context.buying_card and context.card.config.center.set == "Joker" and context.card ~= card and not card.getting_sliced
           and not context.blueprint and card.ability.extra.no_of_signatures < card.ability.extra.max_commons then
-        local signed = SMODS.pseudorandom_probability(card, "gstpst_postaldude", 1, card.ability.extra.odds)
-        local durations = {
-          ["1a"] = 2.3,
-          ["1b"] = 1.7,
-          ["2a"] = 1.6,
-          ["2b"] = 3.2,
-          ["3a"] = 3,
-          ["3b"] = 3.2
-        }
+        if not Ghostposting.config.family_friendly then
+          local signed = SMODS.pseudorandom_probability(card, "gstpst_postaldude", 1, card.ability.extra.odds)
+          local durations = {
+            ["1a"] = 2.3,
+            ["1b"] = 1.7,
+            ["2a"] = 1.6,
+            ["2b"] = 3.2,
+            ["3a"] = 3,
+            ["3b"] = 3.2
+          }
 
-        local sound = card.ability.extra.next_sound .. ((math.random() < 0.5) and "a" or "b")
-        local duration = durations[sound]
-        local interval = 0.3
-        G.E_MANAGER:add_event(Event({
-          func = function()
-            play_sound("gstpst_postaldude_" .. sound, 1, 0.8)
-            return true
+          local sound = card.ability.extra.next_sound .. ((math.random() < 0.5) and "a" or "b")
+          local duration = durations[sound]
+          local interval = 0.3
+          G.E_MANAGER:add_event(Event({
+            func = function()
+              play_sound("gstpst_postaldude_" .. sound, 1, 0.8)
+              return true
+            end
+          }))
+          for i = 1, math.floor(duration / interval) do
+            G.E_MANAGER:add_event(Event({
+              trigger = "before",
+              timer = "REAL",
+              delay = interval,
+              func = function()
+                card:juice_up()
+                return true
+              end
+            }))
           end
-        }))
-        for i = 1, math.floor(duration / interval) do
           G.E_MANAGER:add_event(Event({
             trigger = "before",
             timer = "REAL",
-            delay = interval,
+            delay = (duration % interval) + 1,
             func = function()
-              card:juice_up()
               return true
             end
           }))
-        end
-        G.E_MANAGER:add_event(Event({
-          trigger = "before",
-          timer = "REAL",
-          delay = (duration % interval) + 1,
-          func = function()
-            return true
+          local voice_pitch = 0.9 + (math.random() * 0.4)
+          local voice_times = 7 + math.random(3)
+          local voice_types = {}
+          for i = 1, voice_times do
+            voice_types[#voice_types + 1] = math.random(1, 11)
+            while voice_types[#voice_types] == voice_types[#voice_types - 1] do
+              voice_types[#voice_types] = math.random(1, 11)
+            end
           end
-        }))
-        local voice_pitch = 0.9 + (math.random() * 0.4)
-        local voice_times = 7 + math.random(3)
-        local voice_types = {}
-        for i = 1, voice_times do
-          voice_types[#voice_types + 1] = math.random(1, 11)
-          while voice_types[#voice_types] == voice_types[#voice_types - 1] do
-            voice_types[#voice_types] = math.random(1, 11)
-          end
-        end
 
-        for i = 1, voice_times do
+          for i = 1, voice_times do
+            G.E_MANAGER:add_event(Event({
+              trigger = "after",
+              timer = "REAL",
+              delay = 0.13,
+              func = function()
+                context.card:juice_up()
+                play_sound("voice" .. voice_types[i], voice_pitch, 0.5)
+                return true
+              end
+            }))
+          end
           G.E_MANAGER:add_event(Event({
             trigger = "after",
             timer = "REAL",
-            delay = 0.13,
+            delay = 0.2,
             func = function()
-              context.card:juice_up()
-              play_sound("voice" .. voice_types[i], voice_pitch, 0.5)
+              if signed then
+                card.ability.extra.next_sound = "1"
+                card.ability.extra.no_of_signatures = card.ability.extra.no_of_signatures + card.ability.extra.added_commons
+                if card.ability.extra.no_of_signatures > card.ability.extra.max_commons then card.ability.extra.no_of_signatures = card.ability.extra.max_commons end
+                play_sound("gstpst_postaldude_thanks", 1, 0.8)
+              else
+                local next_options = { ["1"] = "2", ["2"] = "3", ["3"] = "3" }
+                card.ability.extra.next_sound = next_options[card.ability.extra.next_sound]
+                play_sound("gstpst_postaldude_ohno" .. math.random(2), 1, 0.8)
+              end
               return true
             end
           }))
-        end
-        G.E_MANAGER:add_event(Event({
-          trigger = "after",
-          timer = "REAL",
-          delay = 0.2,
-          func = function()
-            if signed then
-              card.ability.extra.next_sound = "1"
-              card.ability.extra.no_of_signatures = card.ability.extra.no_of_signatures + card.ability.extra.added_commons
-              if card.ability.extra.no_of_signatures > card.ability.extra.max_commons then card.ability.extra.no_of_signatures = card.ability.extra.max_commons end
-              play_sound("gstpst_postaldude_thanks", 1, 0.8)
-            else
-              local next_options = { ["1"] = "2", ["2"] = "3", ["3"] = "3" }
-              card.ability.extra.next_sound = next_options[card.ability.extra.next_sound]
-              play_sound("gstpst_postaldude_ohno" .. math.random(2), 1, 0.8)
-            end
-            return true
+        else
+          if SMODS.pseudorandom_probability(card, "gstpst_postaldude", 1, card.ability.extra.odds) then
+            card.ability.extra.no_of_signatures = card.ability.extra.no_of_signatures + card.ability.extra.added_commons
+            if card.ability.extra.no_of_signatures > card.ability.extra.max_commons then card.ability.extra.no_of_signatures = card.ability.extra.max_commons end
+            return { message = localize("k_gstpst_signed_ex"), message_card = card }
           end
-        }))
+        end
       end
 
       if context.setting_blind and not context.blueprint then
@@ -2006,6 +2018,327 @@ do --Boris
     end
     return controllerkpuref(self, key, dt)
   end
+end
+
+do --Jimbo
+  SMODS.Sound({
+    key = "jimbo",
+    path = "gstpst_jimbo.ogg"
+  })
+
+  local gstpst_jimbo_curse_check = function(card)
+    return card.ability.extra.bad_ability == "bad6" and SMODS.pseudorandom_probability(card, "gstpst_jimbo_curse", card.ability.extra.curse_num, card.ability.extra.curse_denom)
+  end
+
+  SMODS.Joker({
+    key = "jimbo",
+    config = { extra = {} },
+    rarity = 1,
+    atlas = "Jokers1",
+    pos = { x = 1, y = 10 },
+    cost = 5,
+    loc_vars = function(self, info_queue, card)
+      if (card.area and card.area.config.collection) or card.fake_card then
+        return { vars = { "collection" } }
+      else
+        info_queue[#info_queue + 1] = G.P_CENTERS.j_gstpst_jimbo
+        local vars_table = { card.ability.extra.good_ability_1, card.ability.extra.good_ability_2, card.ability.extra.bad_ability }
+
+        if card.ability.extra.good_ability_1 == "good1" then
+          vars_table[4] = { card.ability.extra.hand_size }
+        elseif card.ability.extra.good_ability_1 == "good2" then
+          vars_table[4] = { card.ability.extra.hands }
+        elseif card.ability.extra.good_ability_1 == "good3" then
+          vars_table[4] = { card.ability.extra.discards }
+        elseif card.ability.extra.good_ability_1 == "good4" then
+          vars_table[4] = { card.ability.extra.passive_income }
+        elseif card.ability.extra.good_ability_1 == "good5" then
+          vars_table[4] = { card.ability.extra.mult }
+        elseif card.ability.extra.good_ability_1 == "good6" then
+          vars_table[4] = { card.ability.extra.xmult == 1.666 and card.ability.extra.xmult .. "" or card.ability.extra.xmult }
+        elseif card.ability.extra.good_ability_1 == "good7" then
+          vars_table[4] = { card.ability.extra.chips }
+        end
+
+        if card.ability.extra.good_ability_2 == "good8" then
+          vars_table[5] = { card.ability.extra.suit_money, localize(card.ability.extra.money_suit, "suits_plural") }
+          vars_table[5].colours = { G.C.SUITS[card.ability.extra.suit] }
+          --elseif card.ability.extra.good_ability_2 == "good9" then
+          --elseif card.ability.extra.good_ability_2 == "good10" then
+          --elseif card.ability.extra.good_ability_2 == "good11" then
+        elseif card.ability.extra.good_ability_2 == "good12" then
+          vars_table[5] = { card.ability.extra.freerolls }
+        elseif card.ability.extra.good_ability_2 == "good13" then
+          vars_table[5] = { card.ability.extra.moon_money }
+        elseif card.ability.extra.good_ability_2 == "good14" then
+          vars_table[5] = { card.ability.extra.retrigger_max_cards }
+        end
+
+        if card.ability.extra.bad_ability == "bad1" then
+          vars_table[6] = { card.ability.extra.m_hand_size }
+        elseif card.ability.extra.bad_ability == "bad2" then
+          vars_table[6] = { card.ability.extra.m_hands }
+        elseif card.ability.extra.bad_ability == "bad3" then
+          vars_table[6] = { card.ability.extra.m_discards }
+        elseif card.ability.extra.bad_ability == "bad4" then
+          vars_table[6] = { card.ability.extra.target_perishable, card.ability.extra.current_perishable }
+        elseif card.ability.extra.bad_ability == "bad5" then
+          vars_table[6] = { card.ability.extra.rental_cost }
+        elseif card.ability.extra.bad_ability == "bad6" then
+          local curse_num, curse_denom = SMODS.get_probability_vars(card, card.ability.extra.curse_num, card.ability.extra.curse_denom, "gstpst_jimbo_curse")
+          vars_table[6] = { curse_num, curse_denom }
+          --elseif card.ability.extra.bad_ability == "bad7" then
+        elseif card.ability.extra.bad_ability == "bad8" then
+          vars_table[6] = { card.ability.extra.right_xmult == 0.666 and card.ability.extra.right_xmult .. "" or card.ability.extra.right_xmult }
+        end
+        return { vars = vars_table }
+      end
+    end,
+    blueprint_compat = true,
+    eternal_compat = false,
+    perishable_compat = true,
+    pronouns = "he_him",
+    set_ability = function(self, card, initial, delay_sprites)
+      local no_curse_1 = true
+      local no_curse_2 = true
+      local curse_present = true
+
+      while (curse_present and no_curse_1 and no_curse_2) do
+        card.ability.extra.good_ability_1 = "good" .. pseudorandom("gstpst_jimbo_good1", 1, 7)
+        card.ability.extra.good_ability_2 = "good" .. pseudorandom("gstpst_jimbo_good2", 8, 14)
+        card.ability.extra.bad_ability = "bad" .. pseudorandom("gstpst_jimbo_bad", 1, 8)
+
+        no_curse_1 = false
+        no_curse_2 = false
+        curse_present = false
+        if card.ability.extra.good_ability_1 == "good1" then
+          no_curse_1 = true
+          card.ability.extra.hand_size = 1
+        elseif card.ability.extra.good_ability_1 == "good2" then
+          no_curse_1 = true
+          card.ability.extra.hands = 1
+        elseif card.ability.extra.good_ability_1 == "good3" then
+          no_curse_1 = true
+          card.ability.extra.discards = 1
+        elseif card.ability.extra.good_ability_1 == "good4" then
+          card.ability.extra.passive_income = 4
+        elseif card.ability.extra.good_ability_1 == "good5" then
+          card.ability.extra.mult = 12
+        elseif card.ability.extra.good_ability_1 == "good6" then
+          card.ability.extra.xmult = 1.666
+        elseif card.ability.extra.good_ability_1 == "good7" then
+          card.ability.extra.chips = 100
+        end
+
+        if card.ability.extra.good_ability_2 == "good8" then
+          card.ability.extra.suit_money = 1
+          local suit_money_suits = { "Hearts", "Clubs", "Diamonds", "Spades" }
+          card.ability.extra.money_suit = pseudorandom_element(suit_money_suits, "gstpst_jimbo_suit_money")
+        elseif card.ability.extra.good_ability_2 == "good9" then
+          no_curse_2 = true
+        elseif card.ability.extra.good_ability_2 == "good10" then
+          no_curse_2 = true
+          --elseif card.ability.extra.good_ability_2 == "good11" then
+        elseif card.ability.extra.good_ability_2 == "good12" then
+          no_curse_2 = true
+          card.ability.extra.freerolls = 1
+        elseif card.ability.extra.good_ability_2 == "good13" then
+          card.ability.extra.moon_money = 1
+        elseif card.ability.extra.good_ability_2 == "good14" then
+          card.ability.extra.retrigger_max_cards = 5
+        end
+
+        if card.ability.extra.bad_ability == "bad1" then
+          card.ability.extra.m_hand_size = 1
+        elseif card.ability.extra.bad_ability == "bad2" then
+          card.ability.extra.m_hands = 1
+        elseif card.ability.extra.bad_ability == "bad3" then
+          card.ability.extra.m_discards = 1
+        elseif card.ability.extra.bad_ability == "bad4" then
+          card.ability.extra.target_perishable = 5
+          card.ability.extra.current_perishable = card.ability.extra.target_perishable
+        elseif card.ability.extra.bad_ability == "bad5" then
+          card.ability.extra.rental_cost = 3
+        elseif card.ability.extra.bad_ability == "bad6" then
+          curse_present = true
+          card.ability.extra.curse_num = 1
+          card.ability.extra.curse_denom = 2
+          --elseif card.ability.extra.bad_ability == "bad7" then
+        elseif card.ability.extra.bad_ability == "bad8" then
+          card.ability.extra.right_xmult = 0.666
+        end
+      end
+    end,
+    calculate = function(self, card, context)
+      if context.joker_main and (card.ability.extra.mult or card.ability.extra.xmult or card.ability.extra.chips) then
+        if not gstpst_jimbo_curse_check(card) then
+          if card.ability.extra.mult then
+            return { mult = card.ability.extra.mult }
+          elseif card.ability.extra.xmult then
+            return { xmult = card.ability.extra.xmult }
+          elseif card.ability.extra.chips then
+            return { chips = card.ability.extra.chips }
+          end
+        end
+      end
+
+      if context.modify_scoring_hand and card.ability.extra.bad_ability == "bad7" and not context.blueprint then
+        if context.other_card == context.full_hand[1] then
+          return { add_to_hand = true }
+        else
+          return { remove_from_hand = true }
+        end
+      end
+
+      if context.repetition and context.cardarea == G.play and card.ability.extra.good_ability_2 == "good14"
+          and #G.play.cards < card.ability.extra.retrigger_max_cards then
+        if not gstpst_jimbo_curse_check(card) then
+          return { repetitions = 1 }
+        end
+      end
+
+      if context.other_joker and card.ability.extra.right_xmult and G.jokers.cards[#G.jokers.cards] == context.other_joker then
+        return { xmult = card.ability.extra.right_xmult }
+      end
+
+      if context.discard and card.ability.extra.money_suit and context.other_card:is_suit(card.ability.extra.money_suit) then
+        if not gstpst_jimbo_curse_check(card) then
+          return { dollars = card.ability.extra.suit_money }
+        end
+      end
+
+      if context.end_of_round and not context.repetition and not context.individual and not context.game_over then
+        if card.ability.extra.current_perishable and not context.blueprint then
+          card.ability.extra.current_perishable = card.ability.extra.current_perishable - 1
+          if card.ability.extra.current_perishable <= 0 then
+            G.E_MANAGER:add_event(Event({
+              func = function()
+                card:start_dissolve()
+                return true
+              end
+            }))
+          else
+            return { message = localize { type = "variable", key = "a_remaining", vars = { card.ability.extra.current_perishable } } }
+          end
+        elseif card.ability.extra.rental_cost then
+          return { dollars = -card.ability.extra.rental_cost }
+        end
+      end
+
+      if context.end_of_round and context.game_over and context.main_eval and card.ability.extra.good_ability_2 == "good9" and not context.blueprint then
+        if to_big(G.GAME.chips) / to_big(G.GAME.blind.chips) >= to_big(0.25) then -- juuuuuuuust in case something weird happens with amulet or talisman
+          if not gstpst_jimbo_curse_check(card) then
+            G.E_MANAGER:add_event(Event({
+              func = function()
+                G.hand_text_area.blind_chips:juice_up()
+                G.hand_text_area.game_chips:juice_up()
+                play_sound("tarot1")
+                SMODS.destroy_cards(card, nil, true)
+                return true
+              end
+            }))
+            return {
+              message = localize("k_saved_ex"),
+              saved = "ph_gstpst_jimbo",
+              colour = G.C.RED
+            }
+          end
+        end
+      end
+
+      if context.mod_probability and not context.blueprint and context.identifier ~= "gstpst_jimbo_curse" then
+        return { numerator = context.numerator * 2 }
+      end
+    end,
+    add_to_deck = function(self, card, from_debuff)
+      play_sound("gstpst_jimbo", 1, 0.666)
+
+      if not card.ability.extra.hand_size ~= not card.ability.extra.m_hand_size then
+        G.hand:change_size(card.ability.extra.hand_size or -card.ability.extra.m_hand_size)
+      end
+      if not card.ability.extra.hands ~= not card.ability.extra.m_hands then
+        G.GAME.round_resets.hands = G.GAME.round_resets.hands + (card.ability.extra.hands or -card.ability.extra.m_hands)
+        ease_hands_played(card.ability.extra.hands or -card.ability.extra.m_hands)
+      end
+        if not card.ability.extra.discards ~= not card.ability.extra.m_discards then
+        G.GAME.round_resets.discards = G.GAME.round_resets.discards + (card.ability.extra.discards or -card.ability.extra.m_discards)
+        ease_discard(card.ability.extra.discards or -card.ability.extra.m_discards)
+      end
+      
+      if card.ability.extra.good_ability_2 == "good11" and not gstpst_jimbo_curse_check(card) then
+        G.E_MANAGER:add_event(Event({
+          func = (function()
+            card:set_edition("e_negative")
+            return true
+          end)
+        }))
+      end
+      if card.ability.extra.freerolls then
+        SMODS.change_free_rerolls(card.ability.extra.freerolls)
+      end
+      if card.ability.extra.moon_money then
+        G.GAME.interest_amount = G.GAME.interest_amount + card.ability.extra.moon_money
+      end
+    end,
+    remove_from_deck = function(self, card, from_debuff)
+      if not card.ability.extra.hand_size ~= not card.ability.extra.m_hand_size then
+        G.hand:change_size(-(card.ability.extra.hand_size or -card.ability.extra.m_hand_size))
+      end
+      if not card.ability.extra.hands ~= not card.ability.extra.m_hands then
+        G.GAME.round_resets.hands = G.GAME.round_resets.hands - (card.ability.extra.hands or -card.ability.extra.m_hands)
+        ease_hands_played(-(card.ability.extra.hands or -card.ability.extra.m_hands))
+      end
+      if not card.ability.extra.discards ~= not card.ability.extra.m_discards then
+        G.GAME.round_resets.discards = G.GAME.round_resets.discards - (card.ability.extra.discards or -card.ability.extra.m_discards)
+        ease_discard(-(card.ability.extra.discards or -card.ability.extra.m_discards))
+      end
+
+      if card.ability.extra.freerolls then
+        SMODS.change_free_rerolls(-card.ability.extra.freerolls)
+      end
+      if card.ability.extra.moon_money then
+        G.GAME.interest_amount = G.GAME.interest_amount - card.ability.extra.moon_money
+      end
+    end,
+    calc_dollar_bonus = function(self, card)
+      if card.ability.extra.passive_income and not gstpst_jimbo_curse_check(card) then
+        return card.ability.extra.passive_income
+      end
+    end,
+    generate_ui = function(self, info_queue, card, desc_nodes, specific_vars, full_UI_table)
+      if not card then
+        card = self:create_fake_card()
+      end
+
+      if desc_nodes == full_UI_table.main and not full_UI_table.name then
+        full_UI_table.name = localize { type = "name", set = self.set, key = self.key, nodes = full_UI_table.name }
+      elseif desc_nodes ~= full_UI_table.main and not desc_nodes.name then
+        desc_nodes.name = localize { type = "name_text", set = self.set, key = self.key }
+        if (not full_UI_table.from_detailed_tooltip or full_UI_table.info[1] == desc_nodes)
+            and not full_UI_table.no_styled_name then
+          desc_nodes.name_styled = {}
+
+          localize { type = "name", set = self.set, key = self.key, nodes = desc_nodes.name_styled, fixed_scale = 0.63, no_pop_in = true, no_shadow = true, y_offset = 0, no_spacing = true, no_bump = true }
+          desc_nodes.name_styled = SMODS.info_queue_desc_from_rows(desc_nodes.name_styled, true)
+          desc_nodes.name_styled.config.align = "cm"
+        end
+      end
+
+      local vars = self.loc_vars and type(self.loc_vars) == "function" and self:loc_vars(info_queue, card).vars
+      if specific_vars and specific_vars.debuffed then
+        localize { type = "other", key = "debuffed_default", nodes = desc_nodes, AUT = full_UI_table }
+      elseif vars[1] == "collection" then
+        if not full_UI_table.info then full_UI_table.info = {} end
+        localize { type = "descriptions", key = self.key, set = self.set, nodes = desc_nodes, vars = vars or {} }
+      else
+        full_UI_table.multi_box = full_UI_table.multi_box or { {}, {} }
+        localize { type = "descriptions", key = self.key .. "_" .. vars[1], set = self.set, nodes = desc_nodes, vars = vars[4] or {} }
+        desc_nodes.main_box_flag = true
+        localize { type = "descriptions", key = self.key .. "_" .. vars[2], set = self.set, nodes = full_UI_table.multi_box[1], vars = vars[5] or {} }
+        localize { type = "descriptions", key = self.key .. "_" .. vars[3], set = self.set, nodes = full_UI_table.multi_box[2], vars = vars[6] or {} }
+      end
+    end
+  })
 end
 
 do --Cross
@@ -3331,7 +3664,8 @@ do --Buttons on Jokers
 
   function G.UIDEF.use_and_sell_buttons(card)
     if not card or not card.config or not card.config.center or
-        (card.config.center.key ~= "j_gstpst_onearmedbandit" and card.config.center.key ~= "j_gstpst_boris") then
+        (card.config.center.key ~= "j_gstpst_onearmedbandit" and card.config.center.key ~= "j_gstpst_boris")
+        or card.area ~= G.jokers then
       return sell_use_ref(card)
     end
 

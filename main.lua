@@ -50,6 +50,14 @@ local gstpstConfigTab = function()
     callback = function()
     end,
   })
+  gstpst_nodes[#gstpst_nodes + 1] = create_toggle({
+    label = localize("gstpst_family_friendly"),
+    active_colour = HEX("40c76d"),
+    ref_table = Ghostposting.config,
+    ref_value = "family_friendly",
+    callback = function()
+    end,
+  })
   return {
     n = G.UIT.ROOT,
     config = {
