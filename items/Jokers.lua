@@ -2755,7 +2755,7 @@ do --Faceless Zany Joker
   })
 end
 
-if next(SMODS.find_mod("ColdBeans")) then --Better Credit Card
+if not next(SMODS.find_mod("ColdBeans")) then --Better Credit Card
   SMODS.Joker({
     key = "bettercreditcard",
     config = { extra = { bankrupt_at = 20 } },
