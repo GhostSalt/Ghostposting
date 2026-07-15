@@ -97,7 +97,7 @@ if not next(SMODS.find_mod("ColdBeans")) then --Markiplier
   })
 end
 
-do --Tom Scott, Ed Balls, Guy Standing, Crispiest Fries, Exploding Watermelon
+do --Tom Scott, Ed Balls, Guy Standing, Crispiest Fries, Exploding Watermelon, Holy Moly
   SMODS.Atlas {
     key = "Xnopyt",
     path = "GhostpostingXnopyt.png",
@@ -544,6 +544,69 @@ do --Tom Scott, Ed Balls, Guy Standing, Crispiest Fries, Exploding Watermelon
 
     return explodingwatermelon_update_ref(self, dt)
   end
+
+  SMODS.Sound({
+    key = "holymoly",
+    path = "gstpst_holymoly.ogg",
+  })
+
+  SMODS.Joker({
+    key = "holymoly",
+    config = { extra = { added_mult = 2, current_mult = 0 } },
+    rarity = 1,
+    atlas = "Jokers1",
+    pos = { x = 2, y = 10 },
+    flipbook_anim_states = {
+      passive = {
+        anim = { { x = 2, y = 10, t = 1 } },
+        loop = false
+      },
+      holymoly = {
+        anim = {
+          { x = 3,                              y = 10, t = 15 / 30 },
+          { x = 4,                              y = 10, t = 1 / 30 },
+          { x = 5,                              y = 10, t = 1 / 30 },
+          { x = 6,                              y = 10, t = 1 / 30 },
+          { x = 7,                              y = 10, t = 1 / 30 },
+          { x = 8,                              y = 10, t = 1 / 30 },
+          { x = 3,                              y = 10, t = 19 / 30 },
+          { x = 9,                              y = 10, t = 6 / 30 },
+          { xrange = { first = 10, last = 11 }, y = 10, t = 3 / 30 },
+          { xrange = { first = 0, last = 2 },   y = 11, t = 3 / 30 },
+          { x = 3,                              y = 11, t = 1 }
+        },
+        loop = false,
+        continuation = "passive"
+      }
+    },
+    flipbook_anim_initial_state = "passive",
+    cost = 4,
+    loc_vars = function(self, info_queue, card)
+      return { vars = { card.ability.extra.added_mult, card.ability.extra.current_mult } }
+    end,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pronouns = "they_them",
+
+    calculate = function(self, card, context)
+      if context.joker_main and card.ability.extra.current_mult > 0 then
+        return { mult = card.ability.extra.current_mult }
+      end
+
+      if context.before and not context.blueprint and (context.scoring_name == "Straight" or G.GAME.hands[context.scoring_name].order < G.GAME.hands["Straight"].order) then
+        card.ability.extra.current_mult = card.ability.extra.current_mult + card.ability.extra.added_mult
+        G.E_MANAGER:add_event(Event({
+          func = function()
+            play_sound("gstpst_holymoly", 1, 0.7)
+            card:flipbook_set_anim_state("holymoly")
+            return true
+          end
+        }))
+        return { message = localize("k_upgrade_ex") }
+      end
+    end
+  })
 end
 
 if not next(SMODS.find_mod("ColdBeans")) then --Fashion is my Passion
@@ -2260,11 +2323,11 @@ do --Jimbo
         G.GAME.round_resets.hands = G.GAME.round_resets.hands + (card.ability.extra.hands or -card.ability.extra.m_hands)
         ease_hands_played(card.ability.extra.hands or -card.ability.extra.m_hands)
       end
-        if not card.ability.extra.discards ~= not card.ability.extra.m_discards then
+      if not card.ability.extra.discards ~= not card.ability.extra.m_discards then
         G.GAME.round_resets.discards = G.GAME.round_resets.discards + (card.ability.extra.discards or -card.ability.extra.m_discards)
         ease_discard(card.ability.extra.discards or -card.ability.extra.m_discards)
       end
-      
+
       if card.ability.extra.good_ability_2 == "good11" and not gstpst_jimbo_curse_check(card) then
         G.E_MANAGER:add_event(Event({
           func = (function()
@@ -2437,7 +2500,7 @@ do --Cross
           card.ability.extra.current_xmult = card.ability.extra.current_xmult + card.ability.extra.added_xmult
           G.E_MANAGER:add_event(Event({
             func = function()
-              play_sound("gstpst_cross_upright", 1, 0.8)
+              play_sound("gstpst_cross_upright", 1, 0.7)
               return true
             end
           }))
@@ -2445,7 +2508,7 @@ do --Cross
         else
           G.E_MANAGER:add_event(Event({
             func = function()
-              play_sound("gstpst_cross_reverse", 1, 0.8)
+              play_sound("gstpst_cross_reverse", 1, .7)
               gstpst_change_blind_requirement(-100)
               return true
             end

@@ -168,6 +168,16 @@ return {
                     "some real-world time"
                 }
             },
+            j_gstpst_holymoly   = {
+                name = "Holy Moly",
+                text =
+                {
+                    "Gains {C:mult}+#1#{} Mult if",
+                    "played hand is a",
+                    " {C:attention}Straight{} or better",
+                    "{C:inactive}(Currently {C:mult}+#2#{C:inactive} Mult){}"
+                }
+            },
             j_gstpst_fashionismypassion    = {
                 name = "Fashion is my Passion",
                 text =
