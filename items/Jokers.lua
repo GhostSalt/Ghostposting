@@ -2309,7 +2309,7 @@ do --Jimbo
         end
       end
 
-      if context.mod_probability and not context.blueprint and context.identifier ~= "gstpst_jimbo_curse" then
+      if context.mod_probability and not context.blueprint and card.ability.extra.good_ability_2 == "good10" and context.identifier ~= "gstpst_jimbo_curse" then
         return { numerator = context.numerator * 2 }
       end
     end,
@@ -2508,7 +2508,7 @@ do --Cross
         else
           G.E_MANAGER:add_event(Event({
             func = function()
-              play_sound("gstpst_cross_reverse", 1, .7)
+              play_sound("gstpst_cross_reverse", 1, 0.7)
               gstpst_change_blind_requirement(-100)
               return true
             end
