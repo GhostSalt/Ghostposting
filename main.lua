@@ -21,7 +21,7 @@ if not count_consumables then
 end
 
 local allFolders = { "none", "items" }
-local allFiles = { ["none"] = {}, ["items"] = { "Utility", "Jokers", "Tarots", "Decks" } }
+local allFiles = { ["none"] = {}, ["items"] = { "Utility", "Jokers", "Tarots", "Decks", "Stickers" } }
 
 for i = 1, #allFolders do
   if allFolders[i] == "none" then

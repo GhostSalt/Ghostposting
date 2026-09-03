@@ -168,7 +168,7 @@ return {
                     "some real-world time"
                 }
             },
-            j_gstpst_holymoly   = {
+            j_gstpst_holymoly              = {
                 name = "Holy Moly",
                 text =
                 {
@@ -244,6 +244,15 @@ return {
                     "Played cards with {C:attention}odd{}",
                     "rank give {C:money}$#1#{} when scored",
                     "{C:inactive}(A, 9, 7, 5, 3){}"
+                }
+            },
+            j_gstpst_objectsona            = {
+                name = "Objectsona",
+                text =
+                {
+                    "Complete {C:gstpst_challenge}challenges{} for",
+                    "increasingly good {C:money}rewards{}",
+                    "{element:1}"
                 }
             },
             j_gstpst_jokerkitchen          = {
@@ -788,12 +797,58 @@ return {
             }
         },
         Other = {
-            gstpst_man = {
+            gstpst_man           = {
                 name = "Man",
                 text = {
                     "Cannot be",
                     "{C:red}debuffed{}",
                 },
+            },
+            gstpst_marked           = {
+                name = "Marked",
+                text = {
+                    "{C:red}Destroyed{} when you get",
+                    "rid of this {C:attention}Joker{}"
+                },
+            },
+            gstpst_marked_objectsona           = {
+                name = "Marked",
+                text = {
+                    "{C:red}Destroyed{} when you complete",
+                    "the current challenge or",
+                    "get rid of {C:attention}Objectsona{}"
+                },
+            },
+
+            gstpst_objectsona_1a = {
+                name = "Balance Beam",
+                text =
+                {
+                    "Defeat a {C:attention}Blind{}, using",
+                    "the same number of",
+                    "{C:blue}hands{} and {C:red}discards{}",
+                    "{C:attention}Reward{}: Earn {C:money}$#1#{}"
+                }
+            },
+            gstpst_objectsona_1b = {
+                name = "Canal Crossing",
+                text =
+                {
+                    "Defeat a {C:attention}Blind{},",
+                    "using {C:red}no{} discards",
+                    "{C:attention}Reward{}: Earn {C:money}$#1#{}"
+                }
+            },
+            gstpst_objectsona_2 = {
+                name = "Obstacle Course",
+                text =
+                {
+                    "Play {C:attention}#1# Stone{} cards",
+                    "at the same time",
+                    "{C:inactive}#1# Marked Stone cards",
+                    "{C:inactive}were added to your deck",
+                    "{C:attention}Reward{}: {C:tarot}+Charm Tag{}"
+                }
             },
         }
     },
@@ -816,7 +871,8 @@ return {
             gstpst_family_friendly      = "Family friendly mode"
         },
         labels = {
-            gstpst_man = "Man"
+            gstpst_man = "Man",
+            gstpst_marked = "Marked"
         },
         v_dictionary = {
             gstpst_boris_more_tooltip = {

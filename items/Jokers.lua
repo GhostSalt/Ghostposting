@@ -552,7 +552,7 @@ do --Tom Scott, Ed Balls, Guy Standing, Crispiest Fries, Exploding Watermelon, H
 
   SMODS.Joker({
     key = "holymoly",
-    config = { extra = { added_mult = 2, current_mult = 0 } },
+    config = { extra = { added_mult = 3, current_mult = 0 } },
     rarity = 1,
     atlas = "Jokers1",
     pos = { x = 2, y = 10 },
@@ -1041,6 +1041,288 @@ if not next(SMODS.find_mod("ColdBeans")) then --President Hathaway, Chuck McGill
       end
     end,
   })
+end
+
+if false then --Objectsona
+  SMODS.Atlas {
+    key = "Objectsona",
+    path = "GhostpostingObjectsona.png",
+    px = 71,
+    py = 95
+  }
+
+  SMODS.Sound({
+    key = "objectsona_intro",
+    path = "gstpst_objectsona_intro.ogg"
+  })
+
+  SMODS.Sound({
+    key = "objectsona_aaa",
+    path = "gstpst_objectsona_aaa.ogg"
+  })
+
+  SMODS.Sound({
+    key = "objectsona_yay",
+    path = "gstpst_objectsona_yay.ogg"
+  })
+
+  local challenge_gradient = SMODS.Gradient {
+    key = "challenge",
+    colours = {
+      G.C.GREEN,
+      G.C.BLUE
+    },
+    cycle = 3
+  }
+  G.C.GSTPST_CHALLENGE = challenge_gradient
+  G.ARGS.LOC_COLOURS["gstpst_challenge"] = G.C.GSTPST_CHALLENGE
+
+  SMODS.Font({
+    key = "shag",
+    path = "shag.otf",
+    FONTSCALE = 0.09,
+    TEXT_HEIGHT_SCALE = 0.9
+  })
+
+  function G.UIDEF.gstpst_objectsona_challenge_ui(card, challenge_ix)
+    local key = "gstpst_objectsona_" .. (challenge_ix == 1 and "1a" or challenge_ix == 2 and "1b" or challenge_ix - 1)
+
+    local challenge = {
+      main = {},
+      type = {}
+    }
+
+    challenge.name = localize { type = "name", set = "Other", key = key, nodes = challenge.name, font = SMODS.Fonts["gstpst_shag"] }
+    challenge.card_type = "Other"
+
+    local challenge_obj = G.gstpst_objectsona_challenges[challenge_ix]
+    local loc_vars = challenge_obj and challenge_obj.loc_vars and challenge_obj.loc_vars({}, card) or { vars = {} }
+    localize { type = "other", key = key, nodes = challenge.main, vars = loc_vars.vars, font = SMODS.Fonts["gstpst_shag"] }
+
+    challenge.main.background_colour = challenge.main.background_colour or challenge.box_colours and challenge.box_colours[1]
+    challenge.main.main_box_flag = true
+    local multi_boxes = {}
+    if challenge.multi_box then
+      for i, box in ipairs(challenge.multi_box) do
+        box.background_colour = box.background_colour or challenge.box_colours and challenge.box_colours[i + 1]
+        multi_boxes[#multi_boxes + 1] = desc_from_rows(box)
+      end
+    end
+    local ret_val = {
+      n = G.UIT.R,
+      config = { align = "cm", colour = G.C.CLEAR, padding = 0.05 },
+      nodes = {
+        {
+          n = G.UIT.C,
+          config = { align = "cm" },
+          nodes = {
+            {
+              n = G.UIT.R,
+              config = { padding = 0.05, r = 0.12, colour = lighten(G.C.JOKER_GREY, 0.5), emboss = 0.07 },
+              nodes = {
+                {
+                  n = G.UIT.R,
+                  config = { align = "cm", padding = 0.07, r = 0.1, colour = adjust_alpha(darken(G.C.BLACK, 0.1), 0.8) },
+                  nodes = {
+                    name_from_rows(challenge.name),
+                    desc_from_rows(challenge.main)
+                  }
+                }
+              }
+            }
+          }
+        },
+      }
+    }
+    if multi_boxes[1] then
+      for i = 1, #ret_val.nodes[1].nodes[1].nodes[1].nodes do
+        if ret_val.nodes[1].nodes[1].nodes[1].nodes[i] and ret_val.nodes[1].nodes[1].nodes[1].nodes[i].config and ret_val.nodes[1].nodes[1].nodes[1].nodes[i].config.main_box_flag then
+          for j = #multi_boxes, 1, -1 do
+            table.insert(ret_val.nodes[1].nodes[1].nodes[1].nodes, i + 1, multi_boxes[j])
+          end
+          break
+        end
+      end
+    end
+
+    return ret_val
+  end
+
+  G.gstpst_objectsona_challenges = {
+    {
+      loc_vars = function(info_queue, card)
+        return { vars = { card.ability.extra.balance_beam_money } }
+      end,
+      calculate = function(card, context)
+        if context.end_of_round and context.main_eval and not context.game_over and G.GAME.current_round.hands_left == G.GAME.current_round.discards_left then
+          return { progress = true, ret = { dollars = card.ability.extra.balance_beam_money } }
+        end
+      end
+    },
+    {
+      loc_vars = function(info_queue, card)
+        return { vars = { card.ability.extra.build_a_boat_money } }
+      end,
+      calculate = function(card, context)
+        if context.end_of_round and context.main_eval and not context.game_over and G.GAME.current_round.discards_used == 0 then
+          return { progress = true, ret = { dollars = card.ability.extra.build_a_boat_money } }
+        end
+      end
+    },
+    {
+      loc_vars = function(info_queue, card)
+        info_queue[#info_queue + 1] = { key = "gstpst_marked_objectsona", set = "Other", vars = {} }
+        info_queue[#info_queue + 1] = G.P_TAGS.tag_charm
+        return { vars = { card.ability.extra.obstacle_course_cards } }
+      end,
+      calculate = function(card, context)
+        if context.before then
+          local stones = 0
+          for _, v in ipairs(context.full_hand) do
+            if SMODS.has_enhancement(v, "m_stone") then
+              stones = stones + 1
+              if stones >= card.ability.extra.obstacle_course_cards then
+                G.E_MANAGER:add_event(Event({
+                  func = (function()
+                    add_tag({ key = "tag_charm" })
+                    play_sound("generic1", 0.9 + math.random() * 0.1, 0.8)
+                    play_sound("holo1", 1.2 + math.random() * 0.1, 0.4)
+                    return true
+                  end)
+                }))
+                return { progress = true }
+              end
+            end
+          end
+        end
+      end,
+      apply = function(card)
+        card.ability.gstpst_mark_id = nil
+        for i = 1, card.ability.extra.obstacle_course_cards do
+          local _card = SMODS.add_card { set = "Base", enhancement = "m_stone", key_append = "gstpst_objectsona2" }
+          gstpst_mark_card(_card, card)
+        end
+      end,
+      remove = function(card)
+        gstpst_detonate_marks(card)
+      end
+    }
+  }
+
+  SMODS.Joker({
+    key = "objectsona",
+    rarity = 1,
+    atlas = "Jokers1",
+    pos = { x = 4, y = 11 },
+    flipbook_anim_states = {
+      passive = {
+        anim = {
+          { x = 4, y = 11, t = 1, atlas = "gstpst_Jokers1" }
+        },
+        loop = false
+      },
+      intro = {
+        anim = {
+          { xrange = { first = 0, last = 8 }, yrange = { first = 0, last = 2 }, t = 1 / 10, atlas = "gstpst_Objectsona" },
+          { x = 0,                            y = 3,                            t = 5 / 10 },
+          { xrange = { first = 1, last = 3 }, y = 3,                            t = 1 / 10 },
+          { xrange = { first = 4, last = 6 }, y = 3,                            t = 4 / 10 },
+          { x = 7,                            y = 3,                            t = 19 / 10 },
+          { x = 8,                            y = 3,                            t = 1 }
+        },
+        loop = false,
+        continuation = "passive"
+      }
+    },
+    flipbook_anim_initial_state = "passive",
+    cost = 4,
+    config = {
+      extra = {
+        balance_beam_money = 5,
+        build_a_boat_money = 5,
+        obstacle_course_cards = 2
+      },
+      immutable = {
+        current_challenge = 1
+      }
+    },
+    loc_vars = function(self, info_queue, card)
+      local challenge_obj = G.gstpst_objectsona_challenges[card.ability.immutable.current_challenge]
+      if challenge_obj and challenge_obj.loc_vars then challenge_obj.loc_vars(info_queue, card) end
+      return { vars = { elements = { G.UIDEF.gstpst_objectsona_challenge_ui(card, card.ability.immutable.current_challenge) } } }
+    end,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = false,
+    -- pronouns: random
+
+    calculate = function(self, card, context)
+      if not context.blueprint then
+        local challenge = G.gstpst_objectsona_challenges[card.ability.immutable.current_challenge]
+        if challenge then
+          local challenge_ret = challenge.calculate(card, context)
+          if challenge_ret then
+            if challenge_ret.progress then
+              card.ability.immutable.current_challenge = card.ability.immutable.current_challenge + 1
+              G.E_MANAGER:add_event(Event({
+                func = function()
+                  play_sound("gstpst_objectsona_yay")
+                  return true
+                end
+              }))
+              if challenge.remove then
+                challenge.remove(card)
+              end
+              local new_challenge = G.gstpst_objectsona_challenges[card.ability.immutable.current_challenge]
+              if new_challenge and new_challenge.apply then
+                new_challenge.apply(card)
+              end
+            end
+            if challenge_ret.ret then
+              return challenge_ret.ret
+            end
+          end
+        end
+      end
+    end,
+    add_to_deck = function(self, card, from_debuff)
+      if not from_debuff then
+        play_sound("gstpst_objectsona_intro")
+        card:flipbook_set_anim_state("intro")
+        local challenge = G.gstpst_objectsona_challenges[card.ability.immutable.current_challenge]
+        if challenge.apply then
+          challenge.apply(card)
+        end
+      end
+    end,
+    remove_from_deck = function(self, card, from_debuff)
+      if not from_debuff then
+        play_sound("gstpst_objectsona_aaa")
+        local challenge = G.gstpst_objectsona_challenges[card.ability.immutable.current_challenge]
+        if challenge and challenge.remove then
+          challenge.remove(card)
+        end
+      end
+    end
+  })
+
+  function gstpst_test_challenge(card, ix)
+    local challenge = G.gstpst_objectsona_challenges[card.ability.immutable.current_challenge]
+    card.ability.immutable.current_challenge = ix
+    G.E_MANAGER:add_event(Event({
+      func = function()
+        play_sound("gstpst_objectsona_yay")
+        return true
+      end
+    }))
+    if challenge.remove then
+      challenge.remove(card)
+    end
+    local new_challenge = G.gstpst_objectsona_challenges[card.ability.immutable.current_challenge]
+    if new_challenge and new_challenge.apply then
+      new_challenge.apply(card)
+    end
+  end
 end
 
 do --Joker Kitchen / Crazy Hamburger
@@ -1769,31 +2051,6 @@ if not next(SMODS.find_mod("ColdBeans")) then --Man Face, Splash Man, Face
     end,
     pronouns = "he_him",
   })
-
-  SMODS.Atlas {
-    key = "ManSticker",
-    path = "GhostpostingManSticker.png",
-    px = 71,
-    py = 95
-  }
-
-  SMODS.Sticker({
-    key = "man",
-    atlas = "ManSticker",
-    pos = { x = 0, y = 0 },
-    sets = {
-      Default = true,
-      Enhanced = true
-    },
-    badge_colour = HEX("555555"),
-    needs_enable_flag = true,
-    rate = 0,
-  })
-
-  local debuff_ref = Card.set_debuff
-  function Card:set_debuff(should_debuff)
-    if not (self.ability and self.ability["gstpst_man"]) then return debuff_ref(self, should_debuff) end
-  end
 
   SMODS.Joker({
     key = "splashman",
